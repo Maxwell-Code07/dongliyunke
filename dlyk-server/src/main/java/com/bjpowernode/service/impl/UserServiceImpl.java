@@ -2,9 +2,12 @@ package com.bjpowernode.service.impl;
 
 
 import com.bjpowernode.constant.Constants;
+import com.bjpowernode.mapper.TRoleMapper;
 import com.bjpowernode.mapper.TUserMapper;
 import com.bjpowernode.model.TActivityRemark;
+import com.bjpowernode.model.TRole;
 import com.bjpowernode.model.TUser;
+import com.bjpowernode.query.BaseQuery;
 import com.bjpowernode.query.UserQuery;
 import com.bjpowernode.service.UserService;
 import com.bjpowernode.util.JWTUtils;
@@ -19,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -36,6 +40,9 @@ public class UserServiceImpl implements UserService {
     @Resource
     private PasswordEncoder passwordEncoder;
 
+    @Resource
+    private TRoleMapper tRoleMapper;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
        TUser tUser = tUserMapper.selectByLoginAct(username);
@@ -44,6 +51,16 @@ public class UserServiceImpl implements UserService {
            throw new UsernameNotFoundException("登录账号不存在！");
        }
 
+       // 查询一下当前用户的角色
+        List<TRole> tRoleList = tRoleMapper.selectByUserId(tUser.getId());
+       // 字符串的角色列表
+        List<String> stringRoleList = new ArrayList<>();
+        tRoleList.forEach(tRole -> {
+            stringRoleList.add(tRole.getRole());
+        });
+
+        // 设置用户的角色
+        tUser.setRoleList(stringRoleList);
         return tUser;
     }
 
@@ -52,7 +69,7 @@ public class UserServiceImpl implements UserService {
         // 1.设置PageHelper
         PageHelper.startPage(current, Constants.PAGE_SIZE);
         // 2.查询
-        List<TUser> list = tUserMapper.selectUserByPage();
+        List<TUser> list = tUserMapper.selectUserByPage(BaseQuery.builder().build());
         // 3.封装分页数据到PageInfo
         PageInfo<TUser> info = new PageInfo<>(list);
         return info;

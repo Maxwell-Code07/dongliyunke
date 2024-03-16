@@ -1,5 +1,7 @@
 package com.bjpowernode.constant;
 
+import org.apache.tomcat.util.http.parser.Authorization;
+
 /**
  * 常量类
  *
@@ -20,4 +22,7 @@ public class Constants {
 
     // 分页时每页显示10条数据
     public static final Integer PAGE_SIZE = 10;
+
+    // 请求token的名称
+    public static final String TOKEN_NAME = "Authorization";
 }

@@ -46,6 +46,11 @@ public class UserController {
         return R.OK();
     }
 
+    /**
+     * 分页查询用户接口
+     * @param current
+     * @return
+     */
     @GetMapping(value = "/api/users")
     public R userPage(@RequestParam(value = "current",required = false) Integer current){
         // required = false 表示参数可以传，也可以不传

@@ -1,6 +1,8 @@
 package com.bjpowernode.mapper;
 
+import com.bjpowernode.commons.DataScope;
 import com.bjpowernode.model.TUser;
+import com.bjpowernode.query.BaseQuery;
 
 import java.util.List;
 
@@ -19,7 +21,8 @@ public interface TUserMapper {
 
     TUser selectByLoginAct(String username);
 
-    List<TUser> selectUserByPage();
+    @DataScope(tableAlias = "tu",tableField = "id")
+    List<TUser> selectUserByPage(BaseQuery query);
 
     TUser selectDetailById(Integer id);
 

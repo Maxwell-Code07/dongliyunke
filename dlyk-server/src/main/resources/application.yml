@@ -36,4 +36,8 @@ spring:
 # 指定一下mapper.xml文件的位置
 mybatis:
   mapper-locations: classpath:mapper/*.xml
+  configuration:
+    # 在控制台打印sql语句
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
 
