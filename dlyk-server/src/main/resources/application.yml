@@ -1,0 +1,39 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+# 配置数据库连接信息
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dlyk?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    hikari:
+      # 最大连接数
+      max-lifetime: 30
+      # 最小空闲连接，默认是10
+      minimum-idle: 30
+      # 等待连接池分配连接的最大时长，超过该时长还没有可用连接则发生超时异常（单位毫秒）
+      connection-timeout: 5000
+      idle-timeout: 0
+      maximum-pool-size: 18000000
+
+  # 配置redis的连接信息
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+#      password: 123456
+      database: 0
+
+  # 设置jackson返回json数据时，时区和格式
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+
+# 指定一下mapper.xml文件的位置
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+
