@@ -14,12 +14,43 @@
     <result column="edit_time" jdbcType="TIMESTAMP" property="editTime" />
     <result column="edit_by" jdbcType="INTEGER" property="editBy" />
   </resultMap>
+
+  <resultMap id="ActivieyResultMap" type="com.bjpowernode.model.TActivity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="owner_id" jdbcType="INTEGER" property="ownerId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="cost" jdbcType="DECIMAL" property="cost" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="INTEGER" property="createBy" />
+    <result column="edit_time" jdbcType="TIMESTAMP" property="editTime" />
+    <result column="edit_by" jdbcType="INTEGER" property="editBy" />
+<!--    一对一关联查询-->
+    <association property="ownerDO" javaType="com.bjpowernode.model.TUser">
+      <id column="ownerId" jdbcType="INTEGER" property="id"/>
+      <result column="ownerName" jdbcType="INTEGER" property="name"/>
+    </association>
+  </resultMap>
+
   <sql id="Base_Column_List">
-    id, owner_id, `name`, start_time, end_time, cost, description, create_time, create_by, 
+    id, owner_id, `name`, start_time, end_time, cost, description, create_time, create_by,
     edit_time, edit_by
   </sql>
+
+     <select id="selectActivityByPage" resultMap="ActivieyResultMap">
+        select
+            ta.*,
+            tu.id ownerId,tu.name ownerName
+        from t_activity ta left join t_user tu on ta.owner_id = tu.id
+        <where>
+            ${filterSQL}
+        </where>
+    </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from t_activity
     where id = #{id,jdbcType=INTEGER}
@@ -29,13 +60,13 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.bjpowernode.model.TActivity" useGeneratedKeys="true">
-    insert into t_activity (owner_id, `name`, start_time, 
-      end_time, cost, description, 
-      create_time, create_by, edit_time, 
+    insert into t_activity (owner_id, `name`, start_time,
+      end_time, cost, description,
+      create_time, create_by, edit_time,
       edit_by)
-    values (#{ownerId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, 
-      #{endTime,jdbcType=TIMESTAMP}, #{cost,jdbcType=DECIMAL}, #{description,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=INTEGER}, #{editTime,jdbcType=TIMESTAMP}, 
+    values (#{ownerId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP},
+      #{endTime,jdbcType=TIMESTAMP}, #{cost,jdbcType=DECIMAL}, #{description,jdbcType=VARCHAR},
+      #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=INTEGER}, #{editTime,jdbcType=TIMESTAMP},
       #{editBy,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.bjpowernode.model.TActivity" useGeneratedKeys="true">

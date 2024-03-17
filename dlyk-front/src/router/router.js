@@ -33,6 +33,12 @@ let router = createRouter({
                     path: 'user/:id',
                     // 路由路径所对应的页面
                     component: () => import('../view/UserDetailView.vue'),
+                },
+                {
+                    // 路由路径，子路由路径不能以斜杠开头
+                    path: 'activity',
+                    // 路由路径所对应的页面
+                    component: () => import('../view/ActivityView.vue'),
                 }
             ]
         },

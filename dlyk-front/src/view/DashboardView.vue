@@ -25,7 +25,7 @@
             </el-icon>
             <span>市场活动</span>
           </template>
-          <el-menu-item index="1-1">
+          <el-menu-item index="/dashboard/activity">
             <el-icon>
               <Notification/>
             </el-icon>

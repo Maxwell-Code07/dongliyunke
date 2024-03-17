@@ -66,5 +66,10 @@ public class TActivity implements Serializable {
      */
     private Integer editBy;
 
+    /**
+     * 一对一关联，用户对象
+     */
+    private TUser ownerDO;
+
     private static final long serialVersionUID = 1L;
 }
