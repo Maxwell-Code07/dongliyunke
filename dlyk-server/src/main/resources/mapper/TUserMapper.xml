@@ -82,6 +82,14 @@
     where tu.id = #{id,jdbcType=INTEGER}
 </select>
 
+
+  <select id="selectByOwner" resultMap="BaseResultMap">
+    select
+        id,name
+    from t_user
+  </select>
+
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

@@ -2,6 +2,7 @@ package com.bjpowernode.service.impl;
 
 
 import com.bjpowernode.constant.Constants;
+import com.bjpowernode.manager.RedisManager;
 import com.bjpowernode.mapper.TRoleMapper;
 import com.bjpowernode.mapper.TUserMapper;
 import com.bjpowernode.model.TActivityRemark;
@@ -10,6 +11,7 @@ import com.bjpowernode.model.TUser;
 import com.bjpowernode.query.BaseQuery;
 import com.bjpowernode.query.UserQuery;
 import com.bjpowernode.service.UserService;
+import com.bjpowernode.util.CacheUtils;
 import com.bjpowernode.util.JWTUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -43,17 +45,20 @@ public class UserServiceImpl implements UserService {
     @Resource
     private TRoleMapper tRoleMapper;
 
+    @Resource
+    private RedisManager redisManager;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-       TUser tUser = tUserMapper.selectByLoginAct(username);
+        TUser tUser = tUserMapper.selectByLoginAct(username);
 
-       if(tUser == null){
-           throw new UsernameNotFoundException("登录账号不存在！");
-       }
+        if (tUser == null) {
+            throw new UsernameNotFoundException("登录账号不存在！");
+        }
 
-       // 查询一下当前用户的角色
+        // 查询一下当前用户的角色
         List<TRole> tRoleList = tRoleMapper.selectByUserId(tUser.getId());
-       // 字符串的角色列表
+        // 字符串的角色列表
         List<String> stringRoleList = new ArrayList<>();
         tRoleList.forEach(tRole -> {
             stringRoleList.add(tRole.getRole());
@@ -86,7 +91,7 @@ public class UserServiceImpl implements UserService {
         TUser tUser = new TUser();
 
         // 把UserQuery对象里面的属性数据赋值到TUser对象里面去(复制要求：两个对象的属性名相同，属性类型相同，才能复制)
-        BeanUtils.copyProperties(userQuery,tUser);
+        BeanUtils.copyProperties(userQuery, tUser);
 
         tUser.setLoginPwd(passwordEncoder.encode(userQuery.getLoginPwd())); // 密码加密
         tUser.setCreateTime(new Date()); // 创建时间
@@ -104,9 +109,9 @@ public class UserServiceImpl implements UserService {
         TUser tUser = new TUser();
 
         // 把UserQuery对象里面的属性数据赋值到TUser对象里面去(复制要求：两个对象的属性名相同，属性类型相同，才能复制)
-        BeanUtils.copyProperties(userQuery,tUser);
+        BeanUtils.copyProperties(userQuery, tUser);
 
-        if(StringUtils.hasText(userQuery.getLoginPwd())){
+        if (StringUtils.hasText(userQuery.getLoginPwd())) {
             tUser.setLoginPwd(passwordEncoder.encode(userQuery.getLoginPwd())); // 密码加密
         }
 
@@ -128,5 +133,24 @@ public class UserServiceImpl implements UserService {
     @Override
     public int batchDelUserIds(List<String> idList) {
         return tUserMapper.deleteByIds(idList);
+    }
+
+    @Override
+    public List<TUser> getOwnerList() {
+        // 1.从reids查询
+        // 2.从redis查询查不到，就从数据库查询，并且把数据放入redis(3分钟过期)
+        return CacheUtils.getCacheData(() -> {
+                // 生产，从缓存redis查询数据
+                return (List<TUser>)redisManager.getValue(Constants.REDIS_OWNER_KEY);
+            },
+            () -> {
+                // 生产，从mysql查询数据
+                return (List<TUser>)tUserMapper.selectByOwner();
+            },
+            (t) -> {
+                // 消费，把数据放入缓存redis
+                redisManager.setValue(Constants.REDIS_OWNER_KEY,t);
+            }
+        );
     }
 }

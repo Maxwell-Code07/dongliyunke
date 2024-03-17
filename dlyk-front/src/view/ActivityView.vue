@@ -5,10 +5,15 @@
       <el-select
           v-model="activityQuery.ownerId"
           placeholder="请选择负责人"
-          clearable
-      >
-        <el-option label="Zone one" value="shanghai"/>
-        <el-option label="Zone two" value="beijing"/>
+          @click="loadOwner"
+          clearable>
+
+        <el-option
+            v-for="item in ownerOptions"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"/>
+
       </el-select>
     </el-form-item>
 
@@ -100,7 +105,9 @@ export default defineComponent({
       // 分页时每页显示多少条数据
       pageSize: 0,
       // 分页总共查询出多少条数据
-      total: 0
+      total: 0,
+      // 市场负责人的下拉列表数据
+      ownerOptions: [{}]
     }
   },
   // 页面渲染时执行这个函数钩子
@@ -127,6 +134,16 @@ export default defineComponent({
     toPage(current) {
       this.getData(current);
     },
+
+    // 加载负责人
+    loadOwner(){
+      doGet("/api/owner",{}).then(resp => {
+        if(resp.data.code === 200){
+          this.ownerOptions = resp.data.data;
+        }
+      })
+    },
+
   }
 })
 

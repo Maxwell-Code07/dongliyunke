@@ -108,10 +108,13 @@ public class UserController {
         return batchDel >= idList.size() ? R.OK() : R.FAIL();
     }
 
-
-
-
-
-
+    /**
+     * 查询负责人
+     */
+    @GetMapping(value = "/api/owner")
+    public R owner(){
+        List<TUser> ownerList = userService.getOwnerList();
+        return R.OK(ownerList);
+    }
 
 }
