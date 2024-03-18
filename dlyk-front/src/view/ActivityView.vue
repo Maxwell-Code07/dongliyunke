@@ -1,5 +1,5 @@
 <template>
-  <el-form :inline="true" :model="activityQuery" class="demo-form-inline">
+  <el-form :inline="true" :model="activityQuery" class="demo-form-inline" :rules="activityRules">
 
     <el-form-item label="负责人">
       <el-select
@@ -18,29 +18,28 @@
     </el-form-item>
 
     <el-form-item label="活动名称">
-      <el-input v-model="activityQuery.user" placeholder="请输入活动名称" clearable/>
+      <el-input v-model="activityQuery.name" placeholder="请输入活动名称" clearable/>
     </el-form-item>
 
     <el-form-item label="活动时间">
       <el-date-picker
-          v-model="activityQuery.startTime"
+          v-model="activityQuery.activityTime"
           type="datetimerange"
           start-placeholder="开始时间"
           end-placeholder="结束时间"
-          format="YYYY-MM-DD HH:mm:ss"
-          date-format="YYYY/MM/DD ddd"
-          time-format="A hh:mm:ss"/>
+          value-format="YYYY-MM-DD HH:mm:ss"/>
     </el-form-item>
 
-    <el-form-item label="活动预算">
-      <el-input v-model="activityQuery.user" placeholder="请输入活动预算" clearable/>
+    <el-form-item label="活动预算" prop="cost">
+      <el-input v-model="activityQuery.cost" placeholder="请输入活动预算" clearable/>
     </el-form-item>
 
     <el-form-item label="创建时间">
       <el-date-picker
           v-model="activityQuery.createTime"
           type="datetime"
-          placeholder="请选择创建时间"/>
+          placeholder="请选择创建时间"
+          value-format="YYYY-MM-DD HH:mm:ss"/>
     </el-form-item>
 
     <el-form-item>
@@ -100,14 +99,20 @@ export default defineComponent({
       activityQuery: {},
       // 市场活动列表对象，初始值是空
       activityList: [{
-        ownerDO:{}
+        ownerDO: {}
       }],
       // 分页时每页显示多少条数据
       pageSize: 0,
       // 分页总共查询出多少条数据
       total: 0,
       // 市场负责人的下拉列表数据
-      ownerOptions: [{}]
+      ownerOptions: [{}],
+      // 定义市场活动搜索表单验证规则
+      activityRules: {
+        cost: [
+          {pattern: /^[0-9]+(\.[0-9]{2})?$/, message: '活动预算必须是整数或者两位小数', trigger: 'blur'}
+        ]
+      }
     }
   },
   // 页面渲染时执行这个函数钩子
@@ -118,8 +123,27 @@ export default defineComponent({
   methods: {
     // 查询用户列表数据
     getData(current) {
+
+      let startTime = ''; // 开始时间
+      let endTime = ''; // 结束时间
+      for (let key in this.activityQuery.activityTime) {
+        if (key === '0') {
+          startTime = this.activityQuery.activityTime[key];
+        }
+        if (key === '1') {
+          endTime = this.activityQuery.activityTime[key];
+        }
+      }
+
       doGet("/api/activitys", {
-        current: current // 当前查询第几页
+        current: current, // 当前查询第几页
+        // 6个搜索条件参数
+        ownerId: this.activityQuery.ownerId,
+        name: this.activityQuery.name,
+        startTime: startTime,
+        endTime: endTime,
+        cost: this.activityQuery.cost,
+        createTime: this.activityQuery.createTime
       }).then(resp => {
         console.log(resp);
         if (resp.data.code === 200) {
@@ -136,13 +160,18 @@ export default defineComponent({
     },
 
     // 加载负责人
-    loadOwner(){
-      doGet("/api/owner",{}).then(resp => {
-        if(resp.data.code === 200){
+    loadOwner() {
+      doGet("/api/owner", {}).then(resp => {
+        if (resp.data.code === 200) {
           this.ownerOptions = resp.data.data;
         }
       })
     },
+
+    // 搜索
+    onSearch() {
+      this.getData(1);
+    }
 
   }
 })
