@@ -45,6 +45,24 @@
             tu.id ownerId,tu.name ownerName
         from t_activity ta left join t_user tu on ta.owner_id = tu.id
         <where>
+        <if test="ownerId != null">
+          and ta.owner_id = #{ownerId}
+        </if>
+          <if test="name != null">
+            and ta.name like concat ('%', #{name},'%')
+          </if>
+          <if test="startTime != null">
+            and ta.start_time >= #{startTime}
+          </if>
+          <if test="endTime != null">
+            <![CDATA[  and ta.end_time <= #{endTime} ]]>
+          </if>
+          <if test="cost != null">
+            and ta.cost >= #{cost}
+          </if>
+          <if test="createTime != null">
+            and ta.create_time >= #{createTime}
+          </if>
             ${filterSQL}
         </where>
     </select>

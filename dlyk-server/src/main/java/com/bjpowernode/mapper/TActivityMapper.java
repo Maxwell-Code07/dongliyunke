@@ -2,6 +2,7 @@ package com.bjpowernode.mapper;
 
 import com.bjpowernode.commons.DataScope;
 import com.bjpowernode.model.TActivity;
+import com.bjpowernode.query.ActivityQuery;
 import com.bjpowernode.query.BaseQuery;
 import lombok.Data;
 
@@ -21,5 +22,5 @@ public interface TActivityMapper {
     int updateByPrimaryKey(TActivity record);
 
     @DataScope(tableAlias = "ta",tableField = "owner_id")
-    List<TActivity> selectActivityByPage(BaseQuery query);
+    List<TActivity> selectActivityByPage(ActivityQuery query);
 }

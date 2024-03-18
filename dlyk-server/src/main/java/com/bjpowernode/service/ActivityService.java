@@ -1,6 +1,7 @@
 package com.bjpowernode.service;
 
 import com.bjpowernode.model.TActivity;
+import com.bjpowernode.query.ActivityQuery;
 import com.github.pagehelper.PageInfo;
 
 /**
@@ -9,6 +10,6 @@ import com.github.pagehelper.PageInfo;
  */
 public interface ActivityService {
 
-    PageInfo<TActivity> getActivityByPage(Integer current);
+    PageInfo<TActivity> getActivityByPage(Integer current, ActivityQuery activityQuery);
 
 }

@@ -4,6 +4,7 @@ import com.bjpowernode.constant.Constants;
 import com.bjpowernode.mapper.TActivityMapper;
 import com.bjpowernode.model.TActivity;
 import com.bjpowernode.model.TUser;
+import com.bjpowernode.query.ActivityQuery;
 import com.bjpowernode.query.BaseQuery;
 import com.bjpowernode.service.ActivityService;
 import com.github.pagehelper.PageHelper;
@@ -24,11 +25,11 @@ public class ActivityServiceImpl implements ActivityService {
     private TActivityMapper tActivityMapper;
 
     @Override
-    public PageInfo<TActivity> getActivityByPage(Integer current) {
+    public PageInfo<TActivity> getActivityByPage(Integer current, ActivityQuery activityQuery) {
         // 1.设置PageHelper
         PageHelper.startPage(current, Constants.PAGE_SIZE);
         // 2.查询
-        List<TActivity> list = tActivityMapper.selectActivityByPage(BaseQuery.builder().build());
+        List<TActivity> list = tActivityMapper.selectActivityByPage(activityQuery);
         // 3.封装分页数据到PageInfo
         PageInfo<TActivity> info = new PageInfo<>(list);
         return info;

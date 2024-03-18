@@ -33,7 +33,7 @@ public class ActivityController {
         if(current == null){
             current = 1;
         }
-        PageInfo<TActivity> pageInfo = activityService.getActivityByPage(current);
+        PageInfo<TActivity> pageInfo = activityService.getActivityByPage(current,activityQuery);
         return R.OK(pageInfo);
     }
 
