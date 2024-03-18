@@ -39,6 +39,12 @@ let router = createRouter({
                     path: 'activity',
                     // 路由路径所对应的页面
                     component: () => import('../view/ActivityView.vue'),
+                },
+                {
+                    // 路由路径，子路由路径不能以斜杠开头
+                    path: 'activity/add',
+                    // 路由路径所对应的页面
+                    component: () => import('../view/ActivityRecordView.vue'),
                 }
             ]
         },

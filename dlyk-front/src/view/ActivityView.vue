@@ -171,8 +171,12 @@ export default defineComponent({
     // 搜索
     onSearch() {
       this.getData(1);
-    }
+    },
 
+    // 录入市场活动
+    add(){
+      this.$router.push("/dashboard/activity/add");
+    }
   }
 })
 
