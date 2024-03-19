@@ -12,4 +12,5 @@ public interface ActivityService {
 
     PageInfo<TActivity> getActivityByPage(Integer current, ActivityQuery activityQuery);
 
+    int saveActivity(ActivityQuery activityQuery);
 }

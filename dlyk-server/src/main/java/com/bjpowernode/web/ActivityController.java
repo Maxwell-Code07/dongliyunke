@@ -3,13 +3,12 @@ package com.bjpowernode.web;
 import com.bjpowernode.model.TActivity;
 import com.bjpowernode.model.TUser;
 import com.bjpowernode.query.ActivityQuery;
+import com.bjpowernode.query.UserQuery;
 import com.bjpowernode.result.R;
 import com.bjpowernode.service.ActivityService;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Author hzz
@@ -35,6 +34,13 @@ public class ActivityController {
         }
         PageInfo<TActivity> pageInfo = activityService.getActivityByPage(current,activityQuery);
         return R.OK(pageInfo);
+    }
+
+    @PostMapping(value = "/api/activity")
+    public R addActivity(ActivityQuery activityQuery, @RequestHeader(value = "Authorization") String token){
+        activityQuery.setToken(token);
+        int save = activityService.saveActivity(activityQuery);
+        return save >= 1 ? R.OK() : R.FAIL();
     }
 
 }

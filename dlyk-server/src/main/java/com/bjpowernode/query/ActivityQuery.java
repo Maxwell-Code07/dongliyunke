@@ -28,4 +28,7 @@ public class ActivityQuery extends BaseQuery{
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
+    // 活动描述
+    private String description;
+
 }

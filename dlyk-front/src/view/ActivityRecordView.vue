@@ -43,7 +43,7 @@
         placeholder="请输入活动描述"/>
     </el-form-item>
 
-    <el-form-item label="活动名称" prop="name"> <!--编辑-->
+    <el-form-item>
       <el-button type="primary" @click="activitySubmit">提 交</el-button>
       <el-button @click="goBack">返 回</el-button>
     </el-form-item>
@@ -54,17 +54,42 @@
 
 <script>
 import {defineComponent} from "vue";
-import {doGet} from "../http/httpRequest.js";
+import {doGet, doPost} from "../http/httpRequest.js";
+import {messageTip} from "../util/util.js";
 
 export default defineComponent({
   name: "ActivityRecordView",
+
+  // 注入
+  inject :['reload'],
 
   data(){
     return {
       // 市场活动表单对象，初始值是空
       activityQuery:{},
       // 市场活动表单验证规则
-      activityRules:{},
+      activityRules:{
+        ownerId:[
+          {required:true,message:"请选择负责人",trigger:'blur'}
+        ],
+        name:[
+          {required:true,message:"请输入活动名称",trigger:'blur'}
+        ],
+        startTime:[
+          {required:true,message:"请选择开始时间",trigger:'blur'}
+        ],
+        endTime:[
+          {required:true,message:"请选择结束时间",trigger:'blur'}
+        ],
+        cost:[
+          {required:true,message:"请输入活动预算",trigger:'blur'},
+          {pattern: /^[0-9]+(\.[0-9]{2})?$/, message: '活动预算必须是整数或者两位小数', trigger: 'blur'}
+        ],
+        description:[
+          {required:true,message:"请输入活动描述",trigger:'blur'},
+          {min: 5,max: 255,message:"活动描述长度为5-255个字符",trigger:'blur'},
+        ]
+      },
       // 负责人的下拉选项，初始值是空
       ownerOptions:[{}]
     }
@@ -84,9 +109,31 @@ export default defineComponent({
       })
     },
 
+    // 返回
     goBack(){
       this.$router.go(-1);
     },
+
+    // 市场活动提交
+    activitySubmit(){
+      let formData = new FormData();
+      for(let field in this.activityQuery){
+        formData.append(field,this.activityQuery[field]);
+      }
+      this.$refs.activityRefForm.validate((isValid) => {
+        if(isValid){
+          doPost("api/activity",formData).then(resp =>{
+            if(resp.data.code === 200){
+              messageTip("提交成功", "success");
+              // 跳转到市场活动列表页
+              this.$router.push("/dashboard/activity");
+            }else{
+              messageTip("提交失败", "error");
+            }
+          })
+        }
+      })
+    }
   }
 })
 

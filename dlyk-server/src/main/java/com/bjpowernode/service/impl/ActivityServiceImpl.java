@@ -7,11 +7,14 @@ import com.bjpowernode.model.TUser;
 import com.bjpowernode.query.ActivityQuery;
 import com.bjpowernode.query.BaseQuery;
 import com.bjpowernode.service.ActivityService;
+import com.bjpowernode.util.JWTUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,5 +36,21 @@ public class ActivityServiceImpl implements ActivityService {
         // 3.封装分页数据到PageInfo
         PageInfo<TActivity> info = new PageInfo<>(list);
         return info;
+    }
+
+    @Override
+    public int saveActivity(ActivityQuery activityQuery) {
+        TActivity tActivity = new TActivity();
+
+        //把ActivityQuery对象里面的属性数据复制到TActivity对象里面
+        BeanUtils.copyProperties(activityQuery,tActivity);
+
+        tActivity.setCreateTime(new Date()); // 创建时间
+
+        // 登录人的id
+        Integer loginUserId = JWTUtils.parseUserFromJWT(activityQuery.getToken()).getId();
+        tActivity.setCreateBy(loginUserId); // 创建人
+
+        return tActivityMapper.insertSelective(tActivity);
     }
 }

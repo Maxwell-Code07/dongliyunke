@@ -173,6 +173,11 @@ export default defineComponent({
       this.getData(1);
     },
 
+    // 搜索条件重置
+    onReset(){
+      this.activityQuery = {};
+    },
+
     // 录入市场活动
     add(){
       this.$router.push("/dashboard/activity/add");
