@@ -13,4 +13,8 @@ public interface ActivityService {
     PageInfo<TActivity> getActivityByPage(Integer current, ActivityQuery activityQuery);
 
     int saveActivity(ActivityQuery activityQuery);
+
+    TActivity getActivityById(Integer id);
+
+    int updateActivity(ActivityQuery activityQuery);
 }

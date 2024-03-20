@@ -13,6 +13,7 @@ import java.util.Date;
 @Data
 public class ActivityQuery extends BaseQuery{
 
+    private Integer id;
     private Integer ownerId;
     private String name;
 

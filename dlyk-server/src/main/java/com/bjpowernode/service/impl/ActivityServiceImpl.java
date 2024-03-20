@@ -53,4 +53,25 @@ public class ActivityServiceImpl implements ActivityService {
 
         return tActivityMapper.insertSelective(tActivity);
     }
+
+    @Override
+    public TActivity getActivityById(Integer id) {
+        return tActivityMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public int updateActivity(ActivityQuery activityQuery) {
+        TActivity tActivity = new TActivity();
+
+        // 把ActivityQuery对象里面的属性数据复制到TActivity对象里面
+        BeanUtils.copyProperties(activityQuery,tActivity);
+
+        tActivity.setEditTime(new Date());
+
+        // 登录人的id
+        Integer loginUserId = JWTUtils.parseUserFromJWT(activityQuery.getToken()).getId();
+        tActivity.setEditBy(loginUserId); // 创建人
+
+        return tActivityMapper.updateByPrimaryKeySelective(tActivity);
+    }
 }

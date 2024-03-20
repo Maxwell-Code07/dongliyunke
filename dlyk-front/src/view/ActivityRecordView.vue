@@ -54,7 +54,7 @@
 
 <script>
 import {defineComponent} from "vue";
-import {doGet, doPost} from "../http/httpRequest.js";
+import {doGet, doPost, doPut} from "../http/httpRequest.js";
 import {messageTip} from "../util/util.js";
 
 export default defineComponent({
@@ -97,6 +97,8 @@ export default defineComponent({
 
   mounted() {
     this.loadOwner();
+    // 加载要编辑的数据（由于录入和编辑共用同一个页面，所以要判断是编辑还是录入）
+    this.loadActivity();
   },
 
   methods:{
@@ -118,22 +120,49 @@ export default defineComponent({
     activitySubmit(){
       let formData = new FormData();
       for(let field in this.activityQuery){
-        formData.append(field,this.activityQuery[field]);
+        if(this.activityQuery[field]){ // field有值，不为空，如此才传，这样把空字段就过滤掉了，比如当创建时间为空时，就不传创建时间了
+          formData.append(field,this.activityQuery[field]);
+        }
       }
       this.$refs.activityRefForm.validate((isValid) => {
         if(isValid){
-          doPost("api/activity",formData).then(resp =>{
-            if(resp.data.code === 200){
-              messageTip("提交成功", "success");
-              // 跳转到市场活动列表页
-              this.$router.push("/dashboard/activity");
-            }else{
-              messageTip("提交失败", "error");
-            }
-          })
+
+          if(this.activityQuery.id > 0){ // id>0的话，就说明加载完之后，id有值，是编辑点进来的
+            doPut("api/activity", formData).then(resp => {
+              if (resp.data.code === 200){
+                messageTip("编辑成功","success");
+                // 编辑成功之后跳到列表页
+                this.$router.push("/dashboard/activity");
+              }else{
+                messageTip("编辑失败","error");
+              }
+            })
+          }else{
+            doPost("api/activity",formData).then(resp =>{
+              if(resp.data.code === 200){
+                messageTip("提交成功", "success");
+                // 跳转到市场活动列表页
+                this.$router.push("/dashboard/activity");
+              }else{
+                messageTip("提交失败", "error");
+              }
+            })
+          }
         }
       })
-    }
+    },
+
+    // 加载要编辑的市场活动数据
+    loadActivity(){
+      let id = this.$route.params.id;
+      if(id){ // id存在，有值，不为空的话，说明是编辑（即路由有参数传过来）
+        doGet("/api/activity/" + id, {}).then(resp => {
+          if (resp.data.code === 200) {
+            this.activityQuery = resp.data.data;
+          }
+        })
+      }
+    },
   }
 })
 
