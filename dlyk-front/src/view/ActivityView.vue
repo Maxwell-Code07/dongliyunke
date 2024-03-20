@@ -186,6 +186,11 @@ export default defineComponent({
     // 编辑市场活动
     edit(id) {
       this.$router.push("/dashboard/activity/edit/" + id);
+    },
+
+    // 查看详情
+    view(id){
+      this.$router.push("/dashboard/activity/" + id);
     }
   }
 })

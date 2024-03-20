@@ -15,7 +15,7 @@
     <result column="edit_by" jdbcType="INTEGER" property="editBy" />
   </resultMap>
 
-  <resultMap id="ActivieyResultMap" type="com.bjpowernode.model.TActivity">
+  <resultMap id="ActivityResultMap" type="com.bjpowernode.model.TActivity">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="owner_id" jdbcType="INTEGER" property="ownerId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
@@ -32,6 +32,16 @@
       <id column="ownerId" jdbcType="INTEGER" property="id"/>
       <result column="ownerName" jdbcType="INTEGER" property="name"/>
     </association>
+    <!--    一对一关联查询-->
+    <association property="createByDO" javaType="com.bjpowernode.model.TUser">
+      <id column="createById" jdbcType="INTEGER" property="id"/>
+      <result column="createByName" jdbcType="INTEGER" property="name"/>
+    </association>
+    <!--    一对一关联查询-->
+    <association property="editByDO" javaType="com.bjpowernode.model.TUser">
+      <id column="editById" jdbcType="INTEGER" property="id"/>
+      <result column="editByName" jdbcType="INTEGER" property="name"/>
+    </association>
   </resultMap>
 
   <sql id="Base_Column_List">
@@ -39,7 +49,7 @@
     edit_time, edit_by
   </sql>
 
-     <select id="selectActivityByPage" resultMap="ActivieyResultMap">
+     <select id="selectActivityByPage" resultMap="ActivityResultMap">
         select
             ta.*,
             tu.id ownerId,tu.name ownerName
@@ -67,16 +77,30 @@
         </where>
     </select>
 
+  <select id="selectDetailByPrimaryKey" parameterType="java.lang.Integer" resultMap="ActivityResultMap">
+    select
+        ta.*,
+        tu1.id ownerId, tu1.name ownerName,
+        tu2.id createById, tu2.name createByName,
+        tu3.id editById, tu3.name editByName
+    from t_activity ta left join t_user tu1 on ta.owner_id = tu1.id
+                       left join t_user tu2 on ta.create_by = tu2.id
+                       left join t_user tu3 on ta.edit_by = tu3.id
+    where ta.id = #{id,jdbcType=INTEGER}
+  </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from t_activity
     where id = #{id,jdbcType=INTEGER}
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_activity
     where id = #{id,jdbcType=INTEGER}
   </delete>
+
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.bjpowernode.model.TActivity" useGeneratedKeys="true">
     insert into t_activity (owner_id, `name`, start_time,
       end_time, cost, description,

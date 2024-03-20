@@ -56,7 +56,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     public TActivity getActivityById(Integer id) {
-        return tActivityMapper.selectByPrimaryKey(id);
+        return tActivityMapper.selectDetailByPrimaryKey(id);
     }
 
     @Override
