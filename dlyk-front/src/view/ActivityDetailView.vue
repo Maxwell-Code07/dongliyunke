@@ -61,8 +61,9 @@
     <el-table-column property="editByDO.name" label="编辑人"/>
     <el-table-column label="操作">
       <template #default="scope">
-        <el-button type="success" @click="edit(scope.row.id)">编辑</el-button>
-        <el-button type="danger" @click="del(scope.row.id)">删除</el-button>
+        <a href="javascript:" @click="edit(scope.row.id)">编辑</a>
+        &nbsp
+        <a type="javascript:" @click="del(scope.row.id)">删除</a>
       </template>
     </el-table-column>
   </el-table>
@@ -77,12 +78,36 @@
       @next-clic="toPage"
       @current-change="toPage"/>
 
+  <!--活动备注记录的弹窗-->
+  <!--新增用户的弹窗（对话框）-->
+  <el-dialog v-model="activityRemarDialogVisible" title="编辑市场活动备注记录" width="55%" center draggable>
+
+    <el-form ref="editActivityRemarRefForm" :model="editActivityRemarkQuery" label-width="110px" :rules="editActivityRemarRules">
+      <el-form-item label="活动备注" prop="noteContent">
+        <el-input
+            v-model="editActivityRemarkQuery.noteContent"
+            :rows="6"
+            type="textarea"
+            placeholder="请输入活动备注"/>
+      </el-form-item>
+
+    </el-form>
+
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="activityRemarDialogVisible = false">关 闭</el-button>
+        <el-button type="primary" @click="editactivityRemarSubmit">提 交</el-button>
+      </div>
+    </template>
+  </el-dialog>
+
+
 </template>
 
 <script>
 
 import {defineComponent} from "vue";
-import {doGet, doPost} from "../http/httpRequest.js";
+import {doGet, doPost, doPut} from "../http/httpRequest.js";
 import {goBack, messageTip} from "../util/util.js";
 
 
@@ -102,8 +127,9 @@ export default defineComponent({
       },
       // 市场活动备注对象，初始值是空
       activityRemarkQuery: {},
+      editActivityRemarkQuery: {},
 
-      // 验证规则
+      // 提交活动备注验证规则
       activityRemarkRules:{
         noteContent:[
           {required:true,message:"请输入活动描述",trigger:'blur'},
@@ -115,9 +141,19 @@ export default defineComponent({
         createByDO:{},
         editByDO:{}
       }],
+      // 分页时每页显示多少条数据
       pageSize: 0,
+      // 分页总共查询出多少条数据
       total: 0,
-
+      // 编辑活动备注的弹窗，true就弹，false就不弹
+      activityRemarDialogVisible: false,
+      // 编辑活动备注的规则
+      editActivityRemarRules:{
+        noteContent:[
+          {required:true,message:"请输入活动描述",trigger:'blur'},
+          {min: 5,max: 255,message:"活动备注长度为5-255个字符",trigger:'blur'},
+        ]
+      }
     }
   },
 
@@ -188,6 +224,35 @@ export default defineComponent({
     // 分页函数(current这个参数是ele-plus组件传过来的，就是传的当前页）
     toPage(current) {
       this.loadActivityRemarkList(current);
+    },
+
+    // 编辑备注记录
+    edit(id){
+      this.activityRemarDialogVisible = true;
+      doGet("/api/activity/remark/" + id,{}).then(resp => {
+        if(resp.data.code === 200){
+          this.editActivityRemarkQuery = resp.data.data;
+        }
+      })
+    },
+
+    editactivityRemarSubmit(){
+      this.$refs.editActivityRemarRefForm.validate((isValid) => {
+        if(isValid){
+          doPut("/api/activity/remark",{
+            id: this.editActivityRemarkQuery.id,
+            noteContent: this.editActivityRemarkQuery.noteContent
+          }).then(resp => {
+            if(resp.data.code === 200){
+              messageTip("编辑成功", "success");
+              // 刷新
+              this.reload();
+            }else{
+              messageTip("编辑失败", "error");
+            }
+          })
+        }
+      })
     },
   }
 })

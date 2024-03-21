@@ -55,4 +55,25 @@ public class ActivityRemarkServiceImpl implements ActivityRemarkService {
         PageInfo<TActivityRemark> info = new PageInfo<>(list);
         return info;
     }
+
+    @Override
+    public TActivityRemark getActivityRemarkById(Integer id) {
+        return tActivityRemarkMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public int updateActivityRemark(ActivityRemarkQuery activityRemarkQuery) {
+        TActivityRemark tActivityRemark = new TActivityRemark();
+
+        // 把ActivityRemarkQuery 对象里面的属性数据复制到TActivityRemark对象里面
+        BeanUtils.copyProperties(activityRemarkQuery,tActivityRemark);
+
+        tActivityRemark.setEditTime(new Date());
+
+        // 登录人的id
+        Integer loginUserId = JWTUtils.parseUserFromJWT(activityRemarkQuery.getToken()).getId();
+        tActivityRemark.setEditBy(loginUserId); // 创建人
+
+        return tActivityRemarkMapper.updateByPrimaryKeySelective(tActivityRemark);
+    }
 }
