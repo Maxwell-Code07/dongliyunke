@@ -41,7 +41,7 @@
   <select id="selectActivityRemarkByPage" resultMap="ActivityRemarkResultMap">
     select
         tar.*,
-        tu1.id createById,tu1.name cereteByName,
+        tu1.id createById,tu1.name createByName,
         tu2.id editById,tu2.name editByName
     from t_activity_remark tar left join t_user tu1 on tar.create_by = tu1.id
                                left join t_user tu2 on tar.edit_by = tu2.id
