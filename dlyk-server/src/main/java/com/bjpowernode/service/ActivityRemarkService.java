@@ -1,6 +1,8 @@
 package com.bjpowernode.service;
 
+import com.bjpowernode.model.TActivityRemark;
 import com.bjpowernode.query.ActivityRemarkQuery;
+import com.github.pagehelper.PageInfo;
 
 /**
  * @Author hzz
@@ -8,4 +10,6 @@ import com.bjpowernode.query.ActivityRemarkQuery;
  */
 public interface ActivityRemarkService {
     int saveActivityRemark(ActivityRemarkQuery activityRemarkQuery);
+
+    PageInfo<TActivityRemark> getActivityRemarkByPage(Integer current,ActivityRemarkQuery activityRemarkQuery);
 }

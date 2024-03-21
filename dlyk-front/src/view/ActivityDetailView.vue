@@ -48,6 +48,35 @@
     </el-form-item>
 
   </el-form>
+
+  <!--  表格-->
+  <el-table
+      :data="activityRemarkList"
+      style="width: 100%">
+    <el-table-column type="index" label="序号" width="60"/>
+    <el-table-column prop="noteContent" label="备注内容"/>
+    <el-table-column property="createTime" label="备注时间"/>
+    <el-table-column property="createByDO.name" label="备注人"/>
+    <el-table-column property="editTime" label="编辑时间"/>
+    <el-table-column property="editByDO.name" label="编辑人"/>
+    <el-table-column label="操作">
+      <template #default="scope">
+        <el-button type="success" @click="edit(scope.row.id)">编辑</el-button>
+        <el-button type="danger" @click="del(scope.row.id)">删除</el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+
+  <!--分页条-->
+  <el-pagination
+      background
+      layout="prev, pager, next"
+      :page-size="pageSize"
+      :total="total"
+      @prev-click="toPage"
+      @next-clic="toPage"
+      @current-change="toPage"/>
+
 </template>
 
 <script>
@@ -81,12 +110,20 @@ export default defineComponent({
           {min: 5,max: 255,message:"活动备注长度为5-255个字符",trigger:'blur'},
         ]
       },
+      // 活动 备注的列表对象，初始值是空
+      activityRemarkList:[{
+        createByDO:{},
+        editByDO:{}
+      }],
+      pageSize: 0,
+      total: 0,
 
     }
   },
 
   mounted() {
     this.loadActivityDetail();
+    this.loadActivityRemarkList(1);
   },
 
   methods:{
@@ -131,10 +168,28 @@ export default defineComponent({
           })
         }
       })
-    }
+    },
+
+    // 查询备注列表数据
+    loadActivityRemarkList(current) {
+      doGet("/api/activity/remark", {
+        current: current, // 当前查询第几页
+        activityId: this.$route.params.id
+      }).then(resp => {
+        console.log(resp);
+        if (resp.data.code === 200) {
+          this.activityRemarkList = resp.data.data.list;
+          this.pageSize = resp.data.data.pageSize;
+          this.total = resp.data.data.total;
+        }
+      })
+    },
+
+    // 分页函数(current这个参数是ele-plus组件传过来的，就是传的当前页）
+    toPage(current) {
+      this.loadActivityRemarkList(current);
+    },
   }
-
-
 })
 </script>
 

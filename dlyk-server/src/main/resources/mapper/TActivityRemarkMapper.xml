@@ -11,9 +11,48 @@
     <result column="edit_by" jdbcType="INTEGER" property="editBy" />
     <result column="deleted" jdbcType="INTEGER" property="deleted" />
   </resultMap>
+
+  <resultMap id="ActivityRemarkResultMap" type="com.bjpowernode.model.TActivityRemark">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="activity_id" jdbcType="INTEGER" property="activityId" />
+    <result column="note_content" jdbcType="VARCHAR" property="noteContent" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="INTEGER" property="createBy" />
+    <result column="edit_time" jdbcType="TIMESTAMP" property="editTime" />
+    <result column="edit_by" jdbcType="INTEGER" property="editBy" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+    <!--    一对一关联查询-->
+    <association property="createByDO" javaType="com.bjpowernode.model.TUser">
+      <id column="createById" jdbcType="INTEGER" property="id"/>
+      <result column="createByName" jdbcType="INTEGER" property="name"/>
+    </association>
+    <!--    一对一关联查询-->
+    <association property="editByDO" javaType="com.bjpowernode.model.TUser">
+      <id column="editById" jdbcType="INTEGER" property="id"/>
+      <result column="editByName" jdbcType="INTEGER" property="name"/>
+    </association>
+  </resultMap>
+
   <sql id="Base_Column_List">
     id, activity_id, note_content, create_time, create_by, edit_time, edit_by, deleted
   </sql>
+
+
+  <select id="selectActivityRemarkByPage" resultMap="ActivityRemarkResultMap">
+    select
+        tar.*,
+        tu1.id createById,tu1.name cereteByName,
+        tu2.id editById,tu2.name editByName
+    from t_activity_remark tar left join t_user tu1 on tar.create_by = tu1.id
+                               left join t_user tu2 on tar.edit_by = tu2.id
+
+    <where>
+      tar.activity_id = #{activityId,jdbcType=INTEGER}
+
+      ${filterSQL}
+    </where>
+  </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
