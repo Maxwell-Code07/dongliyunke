@@ -7,8 +7,10 @@ import com.bjpowernode.service.ClueService;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @Author hzz
@@ -30,4 +32,11 @@ public class ClueController {
         PageInfo<TClue> pageInfo = clueService.getClueByPage(current);
         return R.OK(pageInfo);
     }
+
+    @PostMapping(value = "/api/importExcel")
+    public R importExcel(MultipartFile file){ //file的名字要和前段formData里面的名字相同，否则接收不到
+        System.out.println(file);
+        return R.OK();
+    }
+
 }
