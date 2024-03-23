@@ -131,5 +131,18 @@ public class TClue implements Serializable {
      */
     private Integer editBy;
 
+    /**
+     * 一对一关联
+     */
+    private TUser ownerDO = new TUser();
+    private TActivity activityDO = new TActivity();
+    private TDicValue appellationDO = new TDicValue();
+    private TDicValue needLoanDO = new TDicValue();
+    private TDicValue intentionStateDO = new TDicValue();
+    private TProduct intentionProductDO = new TProduct();
+    private TDicValue stateDO = new TDicValue();
+    private TDicValue sourceDO = new TDicValue();
+
+
     private static final long serialVersionUID = 1L;
 }

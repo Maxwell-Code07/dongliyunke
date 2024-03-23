@@ -58,6 +58,10 @@ let router = createRouter({
                     // 路由路径所对应的页面
                     component: () => import('../view/ActivityDetailView.vue'),
                 },
+                {
+                  path:'clue',
+                  component:() => import('../view/ClueView.vue'),
+                },
 
             ]
         },

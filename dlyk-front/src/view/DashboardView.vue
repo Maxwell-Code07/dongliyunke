@@ -47,7 +47,7 @@
             </el-icon>
             <span>线索管理</span>
           </template>
-          <el-menu-item index="2-1">
+          <el-menu-item index="/dashboard/clue">
             <el-icon>
               <Film/>
             </el-icon>
