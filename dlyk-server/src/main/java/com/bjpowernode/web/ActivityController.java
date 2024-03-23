@@ -56,5 +56,4 @@ public class ActivityController {
         return update >= 1 ? R.OK() : R.FAIL();
     }
 
-
 }

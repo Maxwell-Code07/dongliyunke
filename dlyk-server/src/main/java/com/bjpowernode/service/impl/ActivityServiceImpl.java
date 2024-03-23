@@ -2,7 +2,9 @@ package com.bjpowernode.service.impl;
 
 import com.bjpowernode.constant.Constants;
 import com.bjpowernode.mapper.TActivityMapper;
+import com.bjpowernode.mapper.TActivityRemarkMapper;
 import com.bjpowernode.model.TActivity;
+import com.bjpowernode.model.TActivityRemark;
 import com.bjpowernode.model.TUser;
 import com.bjpowernode.query.ActivityQuery;
 import com.bjpowernode.query.BaseQuery;

@@ -76,4 +76,15 @@ public class ActivityRemarkServiceImpl implements ActivityRemarkService {
 
         return tActivityRemarkMapper.updateByPrimaryKeySelective(tActivityRemark);
     }
+
+
+    @Override
+    public int delActivityRemarkById(Integer id) {
+        // 逻辑删除：不删数据，只是修改一下数据的状态；
+        // 物理删除：真正把数据从表里删除
+        TActivityRemark tActivityRemark = new TActivityRemark();
+        tActivityRemark.setId(id);
+        tActivityRemark.setDeleted(1); // 删除状态(null或0正常，1删除)
+        return tActivityRemarkMapper.updateByPrimaryKeySelective(tActivityRemark);
+    }
 }

@@ -63,7 +63,7 @@
       <template #default="scope">
         <a href="javascript:" @click="edit(scope.row.id)">编辑</a>
         &nbsp
-        <a type="javascript:" @click="del(scope.row.id)">删除</a>
+        <a href="javascript:" @click="del(scope.row.id)">删除</a>
       </template>
     </el-table-column>
   </el-table>
@@ -107,8 +107,8 @@
 <script>
 
 import {defineComponent} from "vue";
-import {doGet, doPost, doPut} from "../http/httpRequest.js";
-import {goBack, messageTip} from "../util/util.js";
+import {doDelete, doGet, doPost, doPut} from "../http/httpRequest.js";
+import {goBack, messageTip, messsageConfirm} from "../util/util.js";
 
 
 export default defineComponent({
@@ -236,6 +236,7 @@ export default defineComponent({
       })
     },
 
+    // 编辑活动备注（提交保存）
     editactivityRemarSubmit(){
       this.$refs.editActivityRemarRefForm.validate((isValid) => {
         if(isValid){
@@ -254,6 +255,24 @@ export default defineComponent({
         }
       })
     },
+
+    // 删除活动备注
+    del(id){
+      messsageConfirm("您确定要删除该数据吗？").then(() => {
+        // 用户点击‘确定’按钮就会触发then函数
+        doDelete("/api/activity/remark/" + id, {}).then(resp => {
+          if (resp.data.code === 200) {
+            messageTip("删除成功", "success");
+            // 页面刷新
+            this.reload();
+          } else {
+            messageTip("删除失败,原因：" + resp.data.msg, "error");
+          }
+        })
+      }).catch(() => { // 用户点击'取消'按钮就会触发catch函数
+        messageTip("取消删除", "warning");
+      })
+    }
   }
 })
 </script>

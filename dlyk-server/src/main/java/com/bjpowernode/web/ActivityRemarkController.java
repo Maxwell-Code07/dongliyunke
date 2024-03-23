@@ -58,4 +58,10 @@ public class ActivityRemarkController {
         return update >= 1 ? R.OK() : R.FAIL();
     }
 
+    @DeleteMapping(value = "/api/activity/remark/{id}")
+    public R delActivityRemark(@PathVariable(value = "id")Integer id){
+        int del = activityRemarkService.delActivityRemarkById(id);
+        return del >= 1 ? R.OK() : R.FAIL();
+    }
+
 }

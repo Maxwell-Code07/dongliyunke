@@ -16,4 +16,6 @@ public interface ActivityRemarkService {
     TActivityRemark getActivityRemarkById(Integer id);
 
     int updateActivityRemark(ActivityRemarkQuery activityRemarkQuery);
+
+    int delActivityRemarkById(Integer id);
 }
