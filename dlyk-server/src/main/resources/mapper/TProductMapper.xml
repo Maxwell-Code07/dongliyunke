@@ -17,6 +17,15 @@
     id, `name`, guide_price_s, guide_price_e, quotation, `state`, create_time, create_by, 
     edit_time, edit_by
   </sql>
+
+  <select id="selectAllOnSaleProduct" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_product
+    where state = 0
+  </select>
+
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

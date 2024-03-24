@@ -2,6 +2,8 @@ package com.bjpowernode.mapper;
 
 import com.bjpowernode.model.TProduct;
 
+import java.util.List;
+
 public interface TProductMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -14,4 +16,6 @@ public interface TProductMapper {
     int updateByPrimaryKeySelective(TProduct record);
 
     int updateByPrimaryKey(TProduct record);
+
+    List<TProduct> selectAllOnSaleProduct();
 }

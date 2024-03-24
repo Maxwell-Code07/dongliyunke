@@ -15,11 +15,15 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executor;
 
 @MapperScan(basePackages = {"com.bjpowernode.mapper"})
 @SpringBootApplication
 public class DlykServerApplication implements CommandLineRunner {
+
+    public static final Map<String,Object> cacheMap = new HashMap<>();
 
     @Resource
     private RedisTemplate<String,Object> redisTemplate;

@@ -159,7 +159,7 @@ export default defineComponent({
       let formData = new FormData();
       formData.append('file',fileObj) // 文件对象，前面file是参数名，后面fileObj是参数值
       doPost("/api/importExcel",formData).then(resp => {
-        if(resp.data.data === 200){
+        if(resp.data.code === 200){
           messageTip("导入成功","success");
           // 清理一下上传的文件
           this.$refs.uploadRef.clearFiles();

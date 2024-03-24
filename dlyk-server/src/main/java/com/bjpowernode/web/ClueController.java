@@ -1,5 +1,6 @@
 package com.bjpowernode.web;
 
+import com.alibaba.excel.EasyExcel;
 import com.bjpowernode.model.TClue;
 import com.bjpowernode.model.TUser;
 import com.bjpowernode.result.R;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 /**
  * @Author hzz
@@ -34,8 +37,10 @@ public class ClueController {
     }
 
     @PostMapping(value = "/api/importExcel")
-    public R importExcel(MultipartFile file){ //file的名字要和前段formData里面的名字相同，否则接收不到
-        System.out.println(file);
+    public R importExcel(MultipartFile file) throws IOException { //file的名字要和前段formData里面的名字相同，否则接收不到
+
+        clueService.importExcel(file.getInputStream());
+
         return R.OK();
     }
 

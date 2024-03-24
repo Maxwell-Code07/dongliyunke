@@ -1,5 +1,7 @@
 package com.bjpowernode.service.impl;
 
+import com.alibaba.excel.EasyExcel;
+import com.bjpowernode.config.listener.UploadDataListener;
 import com.bjpowernode.constant.Constants;
 import com.bjpowernode.mapper.TClueMapper;
 import com.bjpowernode.model.TClue;
@@ -11,6 +13,7 @@ import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -32,5 +35,13 @@ public class ClueServiceImpl implements ClueService {
         // 3.封装分页数据到PageInfo
         PageInfo<TClue> info = new PageInfo<>(list);
         return info;
+    }
+
+    @Override
+    public void importExcel(InputStream inputStream) {
+        // 链式编程，3个参数，第一个参数是要读取的Excel文件，第二个参数是Excel模板类(要有所有字段)，第三个参数是文件读取的监听器
+        EasyExcel.read(inputStream, TClue.class, new UploadDataListener(tclueMapper))
+                .sheet()
+                .doRead();
     }
 }

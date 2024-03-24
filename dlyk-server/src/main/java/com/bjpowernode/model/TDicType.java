@@ -1,6 +1,8 @@
 package com.bjpowernode.model;
 
 import java.io.Serializable;
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -28,6 +30,11 @@ public class TDicType implements Serializable {
      * 备注
      */
     private String remark;
+
+    /**
+     * 一对多关联
+     */
+    private List<TDicValue> dicValueList;
 
     private static final long serialVersionUID = 1L;
 }
