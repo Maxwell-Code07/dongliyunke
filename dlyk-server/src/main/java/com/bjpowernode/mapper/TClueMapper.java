@@ -20,5 +20,5 @@ public interface TClueMapper {
 
     List<TClue> selectClueByPage(BaseQuery build);
 
-    // void saveClue(List<TClue> );
+    void saveClue(List<TClue> tClueList);
 }

@@ -7,10 +7,7 @@ import com.bjpowernode.result.R;
 import com.bjpowernode.service.ClueService;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -37,9 +34,9 @@ public class ClueController {
     }
 
     @PostMapping(value = "/api/importExcel")
-    public R importExcel(MultipartFile file) throws IOException { //file的名字要和前段formData里面的名字相同，否则接收不到
+    public R importExcel(MultipartFile file, @RequestHeader(value = "Authorization")String token) throws IOException { //file的名字要和前段formData里面的名字相同，否则接收不到
 
-        clueService.importExcel(file.getInputStream());
+        clueService.importExcel(file.getInputStream(),token);
 
         return R.OK();
     }

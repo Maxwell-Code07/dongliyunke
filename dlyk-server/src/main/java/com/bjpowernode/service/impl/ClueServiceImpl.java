@@ -38,9 +38,9 @@ public class ClueServiceImpl implements ClueService {
     }
 
     @Override
-    public void importExcel(InputStream inputStream) {
+    public void importExcel(InputStream inputStream,String token) {
         // 链式编程，3个参数，第一个参数是要读取的Excel文件，第二个参数是Excel模板类(要有所有字段)，第三个参数是文件读取的监听器
-        EasyExcel.read(inputStream, TClue.class, new UploadDataListener(tclueMapper))
+        EasyExcel.read(inputStream, TClue.class, new UploadDataListener(tclueMapper,token))
                 .sheet()
                 .doRead();
     }

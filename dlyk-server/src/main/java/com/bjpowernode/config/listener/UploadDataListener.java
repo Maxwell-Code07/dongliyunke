@@ -5,10 +5,13 @@ import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.util.ListUtils;
 import com.bjpowernode.mapper.TClueMapper;
 import com.bjpowernode.model.TClue;
+import com.bjpowernode.model.TUser;
 import com.bjpowernode.util.JSONUtils;
 
+import com.bjpowernode.util.JWTUtils;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,13 +31,15 @@ public class UploadDataListener implements ReadListener<TClue> {
      * 假设这个是一个DAO，当然有业务逻辑这个也可以是一个service。当然如果不用存储这个对象没用。
      */
     private TClueMapper tClueMapper;
+    private String token;
 
 
     /**
      * 如果使用了spring,请使用这个构造方法。每次创建Listener的时候需要把spring管理的类传进来
      */
-    public UploadDataListener(TClueMapper tClueMapper) {
+    public UploadDataListener(TClueMapper tClueMapper,String token) {
         this.tClueMapper = tClueMapper;
+        this.token = token;
     }
 
     /**
@@ -46,6 +51,11 @@ public class UploadDataListener implements ReadListener<TClue> {
 
     public void invoke(TClue tClue, AnalysisContext context) {
         log.info("读取到的每一条数据:{}", JSONUtils.toJSON(tClue));
+
+        // 给读到的clue对象设置创建时间（导入时间）和创建人（导入人）
+        tClue.setCreateTime(new Date());
+        TUser tUser = JWTUtils.parseUserFromJWT(token);
+        tClue.setCreateBy(tUser.getId());
 
         // 每读到一行，就把该数据放入到一个缓存List中
         cachedDataList.add(tClue);
@@ -76,7 +86,7 @@ public class UploadDataListener implements ReadListener<TClue> {
      */
     private void saveData() {
         log.info("{}条数据，开始存储数据库！", cachedDataList.size());
-        // tClueMapper.saveClue(cachedDataList);
+        tClueMapper.saveClue(cachedDataList);
         log.info("存储数据库成功！");
     }
 }

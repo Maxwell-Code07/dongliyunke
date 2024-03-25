@@ -138,6 +138,31 @@
     delete from t_clue
     where id = #{id,jdbcType=INTEGER}
   </delete>
+
+  <!--批量保存-->
+  <insert id="saveClue" keyColumn="id" keyProperty="id" parameterType="com.bjpowernode.model.TClue" useGeneratedKeys="true">
+    insert into t_clue (owner_id, activity_id, full_name,
+                        appellation, phone, weixin,
+                        qq, email, age, job,
+                        year_income, address, need_loan,
+                        intention_state, intention_product, `state`,
+                        `source`, description, next_contact_time,
+                        create_time, create_by, edit_time,
+                        edit_by)
+    values
+        <foreach collection="tClueList" item="tClue" separator=",">
+          (#{tClue.ownerId,jdbcType=INTEGER}, #{tClue.activityId,jdbcType=INTEGER}, #{tClue.fullName,jdbcType=VARCHAR},
+          #{tClue.appellation,jdbcType=INTEGER}, #{tClue.phone,jdbcType=VARCHAR}, #{tClue.weixin,jdbcType=VARCHAR},
+          #{tClue.qq,jdbcType=VARCHAR}, #{tClue.email,jdbcType=VARCHAR}, #{tClue.age,jdbcType=INTEGER}, #{tClue.job,jdbcType=VARCHAR},
+          #{tClue.yearIncome,jdbcType=DECIMAL}, #{tClue.address,jdbcType=VARCHAR}, #{tClue.needLoan,jdbcType=INTEGER},
+          #{tClue.intentionState,jdbcType=INTEGER}, #{tClue.intentionProduct,jdbcType=INTEGER}, #{tClue.state,jdbcType=INTEGER},
+          #{tClue.source,jdbcType=INTEGER}, #{tClue.description,jdbcType=VARCHAR}, #{tClue.nextContactTime,jdbcType=TIMESTAMP},
+          #{tClue.createTime,jdbcType=TIMESTAMP}, #{tClue.createBy,jdbcType=INTEGER}, #{tClue.editTime,jdbcType=TIMESTAMP},
+          #{tClue.editBy,jdbcType=INTEGER})
+        </foreach>
+  </insert>
+
+
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.bjpowernode.model.TClue" useGeneratedKeys="true">
     insert into t_clue (owner_id, activity_id, full_name, 
       appellation, phone, weixin, 
