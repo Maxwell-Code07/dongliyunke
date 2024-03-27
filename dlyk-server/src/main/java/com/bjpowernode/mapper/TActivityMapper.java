@@ -25,4 +25,6 @@ public interface TActivityMapper {
     List<TActivity> selectActivityByPage(ActivityQuery query);
 
     TActivity selectDetailByPrimaryKey(Integer id);
+
+    List<TActivity> selectOngoingActivity();
 }

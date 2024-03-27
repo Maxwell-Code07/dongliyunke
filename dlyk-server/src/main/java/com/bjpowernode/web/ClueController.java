@@ -3,6 +3,7 @@ package com.bjpowernode.web;
 import com.alibaba.excel.EasyExcel;
 import com.bjpowernode.model.TClue;
 import com.bjpowernode.model.TUser;
+import com.bjpowernode.query.ClueQuery;
 import com.bjpowernode.result.R;
 import com.bjpowernode.service.ClueService;
 import com.github.pagehelper.PageInfo;
@@ -39,6 +40,20 @@ public class ClueController {
         clueService.importExcel(file.getInputStream(),token);
 
         return R.OK();
+    }
+
+    @GetMapping(value = "/api/clue/{phone}")
+    public R checkPhone(@PathVariable(value = "phone")String phone){
+        Boolean check = clueService.checkPhone(phone);
+        return check ? R.OK() : R.FAIL("该手机号已存在");
+    }
+
+    @PostMapping(value = "/api/clue")
+    public R addClue(ClueQuery clueQuery, @RequestHeader(value = "Authorization") String token){
+        clueQuery.setToken(token);
+        int save = clueService.saveClue(clueQuery);
+
+        return save >=1 ? R.OK() : R.FAIL();
     }
 
 }

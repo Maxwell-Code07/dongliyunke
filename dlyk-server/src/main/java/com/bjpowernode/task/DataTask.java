@@ -2,9 +2,12 @@ package com.bjpowernode.task;
 
 
 import com.bjpowernode.DlykServerApplication;
+import com.bjpowernode.model.TActivity;
 import com.bjpowernode.model.TDicType;
 import com.bjpowernode.model.TDicValue;
 import com.bjpowernode.model.TProduct;
+import com.bjpowernode.result.DicEnum;
+import com.bjpowernode.service.ActivityService;
 import com.bjpowernode.service.DicTypeService;
 import com.bjpowernode.service.ProductService;
 import jakarta.annotation.Resource;
@@ -30,6 +33,9 @@ public class DataTask {
     @Resource
     private ProductService productService;
 
+    @Resource
+    private ActivityService activityService;
+
     // 调度的意思
     // @Scheduled(cron = "${project.task.cron}",zone = "Asia/Shanghai",timeUnit = TimeUnit.MILLISECONDS,initialDelay = 1000)
     @Scheduled(fixedDelayString = "${project.task.delay}",zone = "Asia/Shanghai",timeUnit = TimeUnit.MILLISECONDS,initialDelay = 1000)
@@ -50,6 +56,10 @@ public class DataTask {
 
         // 查询所有的在售产品
         List<TProduct> tProductList = productService.getAllOnSaleProduct();
-        DlykServerApplication.cacheMap.put("product",tProductList);
+        DlykServerApplication.cacheMap.put(DicEnum.PRODUCT.getCode(), tProductList);
+
+        // 查询所有正在进行的市场活动
+        List<TActivity> tActivityList = activityService.getOngoingActivity();
+        DlykServerApplication.cacheMap.put(DicEnum.ACTIVITY.getCode(), tActivityList);
     }
 }

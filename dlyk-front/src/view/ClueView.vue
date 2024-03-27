@@ -174,6 +174,16 @@ export default defineComponent({
     // 提交上传Excel文件
     submitExcel(){
       this.$refs.uploadRef.submit();
+    },
+
+    // 录入线索
+    addClue(){
+      this.$router.push("/dashboard/clue/add");
+    },
+
+    // 编辑
+    edit(id){
+      this.$router.push("/dashboard/clue/edit/" + id);
     }
 
   }

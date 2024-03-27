@@ -22,7 +22,9 @@ public enum DicEnum {
     INTENTIONSTATE("intentionState"),
     NEEDLOAN("needLoan"),
 
-    PRODUCT("product")
+    PRODUCT("product"),
+
+    ACTIVITY("activity"),
 
     ;
 

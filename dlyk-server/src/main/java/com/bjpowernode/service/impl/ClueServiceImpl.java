@@ -7,13 +7,17 @@ import com.bjpowernode.mapper.TClueMapper;
 import com.bjpowernode.model.TClue;
 import com.bjpowernode.model.TUser;
 import com.bjpowernode.query.BaseQuery;
+import com.bjpowernode.query.ClueQuery;
 import com.bjpowernode.service.ClueService;
+import com.bjpowernode.util.JWTUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -43,5 +47,31 @@ public class ClueServiceImpl implements ClueService {
         EasyExcel.read(inputStream, TClue.class, new UploadDataListener(tclueMapper,token))
                 .sheet()
                 .doRead();
+    }
+
+    @Override
+    public Boolean checkPhone(String phone) {
+        int count = tclueMapper.selectByCount(phone);
+        return count <= 0; // 没有查到手机号就是true,查到了是false
+    }
+
+    @Override
+    public int saveClue(ClueQuery clueQuery) {
+
+        int count = tclueMapper.selectByCount(clueQuery.getPhone());
+        if(count <= 0){
+            TClue tClue = new TClue();
+            BeanUtils.copyProperties(clueQuery, tClue);
+
+            //解析jwt得到userId
+            Integer loginUserId = JWTUtils.parseUserFromJWT(clueQuery.getToken()) .getId() ;
+
+            tClue.setCreateTime(new Date());//创建时间
+            tClue.setCreateBy(loginUserId);//创建人id
+
+            return tclueMapper.insertSelective(tClue);
+        }else{
+            throw new RuntimeException("该手机号已经录入过了");
+        }
     }
 }

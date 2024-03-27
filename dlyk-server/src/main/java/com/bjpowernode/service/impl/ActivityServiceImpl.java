@@ -76,4 +76,9 @@ public class ActivityServiceImpl implements ActivityService {
 
         return tActivityMapper.updateByPrimaryKeySelective(tActivity);
     }
+
+    @Override
+    public List<TActivity> getOngoingActivity() {
+        return tActivityMapper.selectOngoingActivity();
+    }
 }

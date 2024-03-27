@@ -62,6 +62,10 @@ let router = createRouter({
                   path:'clue',
                   component:() => import('../view/ClueView.vue'),
                 },
+                {
+                    path:'clue/add',
+                    component:() => import('../view/ClueRecordView.vue'),
+                },
 
             ]
         },

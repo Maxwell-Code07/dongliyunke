@@ -89,6 +89,14 @@
     where ta.id = #{id,jdbcType=INTEGER}
   </select>
 
+
+  <select id="selectOngoingActivity" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_activity
+    where  <![CDATA[start_time <= now() and end_time >= now() ]]>
+  </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
