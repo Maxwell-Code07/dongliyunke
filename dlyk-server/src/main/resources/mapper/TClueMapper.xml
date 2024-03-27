@@ -135,12 +135,41 @@
     where phone = #{phone,jdbcType=VARCHAR}
   </select>
 
+
+  <select id="selectDetailById" parameterType="java.lang.Integer" resultMap="ClueResultMap">
+    select
+      tc.*,
+      tu1.id ownerId, tu1.name ownerName,
+      ta.id activityId, ta.name activityName,
+      tdv.id appllationId, tdv.type_value appellationName,
+      tdv2.id needLoanId, tdv2.type_value needLOanName,
+      tdv3.id intentionStateId, tdv3.type_value intentionStateName,
+      tp.id intentionProductId, tp.name intentionProductName,
+
+      tdv4.id stateId, tdv4.type_value stateName,
+      tdv5.id sourceId, tdv5.type_value sourceName
+
+    from t_clue tc left join t_user tu1 on tc.owner_id = tu1.id
+                   left join t_activity ta on tc.activity_id = ta.id
+                   left join t_dic_value tdv on tc.appellation = tdv.id
+                   left join t_dic_value tdv2 on tc.need_loan = tdv2.id
+                   left join t_dic_value tdv3 on tc.intention_state = tdv3.id
+
+                   left join t_product tp on tc.intention_product = tp.id
+
+                   left join t_dic_value tdv4 on tc.state = tdv4.id
+                   left join t_dic_value tdv5 on tc.source = tdv5.id
+    where tc.id = #{id,jdbcType=INTEGER}
+  </select>
+
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_clue
     where id = #{id,jdbcType=INTEGER}
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_clue
     where id = #{id,jdbcType=INTEGER}

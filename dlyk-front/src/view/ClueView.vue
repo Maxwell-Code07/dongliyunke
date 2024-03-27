@@ -12,9 +12,11 @@
     <el-table-column property="ownerDO.name" label="负责人" width="120" />
     <el-table-column property="activityDO.name" label="所属活动"/>
     <el-table-column label="姓名">
+
       <template #default="scope">
         <a href="javascript:" @click="view(scope.row.id)">{{ scope.row.fullName }}</a>
       </template>
+
     </el-table-column>
     <el-table-column property="appellationDO.typeValue" label="称呼"/>
     <el-table-column property="phone" label="手机" width="120"/>
@@ -184,6 +186,11 @@ export default defineComponent({
     // 编辑
     edit(id){
       this.$router.push("/dashboard/clue/edit/" + id);
+    },
+
+    // 详情页面
+    view(id){
+      this.$router.push("/dashboard/clue/detail/" + id);
     }
 
   }

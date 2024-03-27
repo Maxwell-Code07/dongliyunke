@@ -77,7 +77,7 @@ public class ClueServiceImpl implements ClueService {
 
     @Override
     public TClue getClueById(Integer id) {
-        return tclueMapper.selectByPrimaryKey(id);
+        return tclueMapper.selectDetailById(id);
     }
 
     @Override
