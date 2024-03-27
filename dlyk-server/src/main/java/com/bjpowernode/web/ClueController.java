@@ -56,4 +56,18 @@ public class ClueController {
         return save >=1 ? R.OK() : R.FAIL();
     }
 
+    @GetMapping(value = "/api/clue/detail/{id}")
+    public R loadClue(@PathVariable(value = "id") Integer id){
+        TClue tClue = clueService.getClueById(id);
+        return R.OK(tClue);
+    }
+
+    @PutMapping(value = "/api/clue")
+    public R editClue(ClueQuery clueQuery, @RequestHeader(value = "Authorization") String token){
+        clueQuery.setToken(token);
+        int update = clueService.updateClue(clueQuery);
+
+        return update >=1 ? R.OK() : R.FAIL();
+    }
+
 }

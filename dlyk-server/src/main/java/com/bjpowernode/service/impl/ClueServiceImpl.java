@@ -74,4 +74,23 @@ public class ClueServiceImpl implements ClueService {
             throw new RuntimeException("该手机号已经录入过了");
         }
     }
+
+    @Override
+    public TClue getClueById(Integer id) {
+        return tclueMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public int updateClue(ClueQuery clueQuery) {
+        TClue tClue = new TClue();
+        BeanUtils.copyProperties(clueQuery, tClue);
+
+        //解析jwt得到userId
+        Integer loginUserId = JWTUtils.parseUserFromJWT(clueQuery.getToken()) .getId() ;
+
+        tClue.setEditTime(new Date());//编辑时间
+        tClue.setEditBy(loginUserId);//编辑人id
+
+        return tclueMapper.updateByPrimaryKeySelective(tClue);
+    }
 }

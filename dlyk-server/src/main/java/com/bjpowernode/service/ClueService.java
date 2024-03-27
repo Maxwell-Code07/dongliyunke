@@ -19,4 +19,8 @@ public interface ClueService {
     Boolean checkPhone(String phone);
 
     int saveClue(ClueQuery clueQuery);
+
+    TClue getClueById(Integer id);
+
+    int updateClue(ClueQuery clueQuery);
 }

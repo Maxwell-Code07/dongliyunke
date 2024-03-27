@@ -185,8 +185,8 @@
 
 <script>
 import {defineComponent} from "vue";
-import {doGet, doPost} from "../http/httpRequest.js";
-import {goBack,messageTip} from "../util/util.js";
+import {doGet, doPost, doPut} from "../http/httpRequest.js";
+import {goBack, messageTip} from "../util/util.js";
 
 export default defineComponent({
   name: "ClueRecordView",
@@ -247,6 +247,9 @@ export default defineComponent({
     this.loadDicValue('product');
     this.loadOwner();
     this.loadLoginUser();
+
+    // 加载要编辑的数据（由于录入和编辑共用同一个页面，所以要判断是编辑还是录入）
+    this.loadClue();
   },
 
   methods: {
@@ -318,23 +321,52 @@ export default defineComponent({
         if (isValid) {
           let formData = new FormData();
           for (let field in this.clueQuery) {
-            formData.append(field, this.clueQuery[field]);
-          }
-          doPost("/api/clue", formData).then((resp) => { //获取ajax异步请求后的结果
-            console.log(resp);
-            if (resp.data.code === 200) {
-              //录入成功，提示一下
-              messageTip("录入成功", "success");
-              //跳转到活动列表页
-              this.$router.push("/dashboard/clue");
-            } else {
-              //录入失败，提示一下
-              messageTip("录入失败", "error");
+            if(this.clueQuery[field]){ // this.clueQuery[field]有值，存在，不为空
+              formData.append(field, this.clueQuery[field]);
             }
-          });
+          }
+          if (this.clueQuery.id > 0) { // 说明是点编辑点进来的
+            doPut("/api/clue", formData).then((resp) => { //获取ajax异步请求后的结果
+              console.log(resp);
+              if (resp.data.code === 200) {
+                //编辑成功，提示一下
+                messageTip("编辑成功", "success");
+                //跳转到活动列表页
+                this.$router.push("/dashboard/clue");
+              } else {
+                //编辑失败，提示一下
+                messageTip("编辑失败", "error");
+              }
+            });
+          } else {
+            doPost("/api/clue", formData).then((resp) => { //获取ajax异步请求后的结果
+              console.log(resp);
+              if (resp.data.code === 200) {
+                //录入成功，提示一下
+                messageTip("录入成功", "success");
+                //跳转到活动列表页
+                this.$router.push("/dashboard/clue");
+              } else {
+                //录入失败，提示一下
+                messageTip("录入失败", "error");
+              }
+            });
+          }
         }
       })
-    }
+    },
+
+    // 加载要编辑的线索数据
+    loadClue() {
+      let id = this.$route.params.id;
+      if (id) { // id存在，有值，不为空的话，说明是编辑（即路由有参数传过来）
+        doGet("/api/clue/detail/" + id, {}).then(resp => {
+          if (resp.data.code === 200) {
+            this.clueQuery = resp.data.data;
+          }
+        })
+      }
+    },
   },
 })
 </script>
