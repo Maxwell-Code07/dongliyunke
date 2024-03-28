@@ -140,6 +140,43 @@
       @next-clic="toPage"
       @current-change="toPage"/>
 
+  <!--线索转换客户的弹窗-->
+  <!--线索转换为客户的弹窗（对话框）-->
+  <el-dialog v-model="convertCustomerDialogVisible" title="线索转换客户" width="55%" center>
+    <el-form ref="convertCustomerRefForm" :model="customerQuery" label-width="110px" :rules="convertCustomerRules">
+      <el-form-item label="意向产品" prop="product">
+        <el-select v-model="customerQuery.product" placeholder="请选择" style="width: 100%;" @click="loadDicValue('product')">
+          <el-option
+              v-for="item in productOptions"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"/>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="客户描述" prop="description">
+        <el-input
+            v-model="customerQuery.description"
+            :rows="8"
+            type="textarea"
+            placeholder="请输入客户描述"/>
+      </el-form-item>
+      <el-form-item label="下次跟踪时间" prop="nextContactTime">
+        <el-date-picker
+            v-model="customerQuery.nextContactTime"
+            type="datetime"
+            style="width: 100%;"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            placeholder="请选择下次跟踪时间"/>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="convertCustomerDialogVisible = false">关 闭</el-button>
+        <el-button type="primary" @click="convertCustomerSubmit">转 换</el-button>
+      </span>
+    </template>
+  </el-dialog>
+
 </template>
 
 <script>
@@ -183,6 +220,25 @@ export default defineComponent({
       pageSize: 0,
       // 分页总共查询出多少条数据
       total: 0,
+      // 定义转换客户的弹窗是否弹出来，默认是false不弹出来，true就弹出来
+      convertCustomerDialogVisible: false,
+      // 线索转换为客户的form表单对象，初始值是空
+      customerQuery: {},
+      //定义线索转换为客户的验证规则
+      convertCustomerRules : {
+        product : [
+          { required: true, message: '请选择意向产品', trigger: ['blur', 'change'] }
+        ],
+        description : [
+          { required: true, message: '客户描述不能为空', trigger: 'blur' },
+          { min: 5, max: 255, message: '客户描述长度为5-255个字符', trigger: 'blur' }
+        ],
+        nextContactTime : [
+          { required: true, message: '请选择下次联系时间', trigger: 'blur' }
+        ]
+      },
+      // 意向产品下拉选项，初始值是空
+      productOptions: [{}]
     }
   },
 
@@ -227,6 +283,8 @@ export default defineComponent({
         if (resp.data.code === 200) {
           if (typeCode === 'noteWay') {
             this.noteWayOptions = resp.data.data;
+          }else if(typeCode === 'product'){
+            this.productOptions = resp.data.data;
           }
         }
       })
@@ -251,6 +309,11 @@ export default defineComponent({
     toPage(current) {
       this.loadClueRemarkList(current);
     },
+
+    // 转换客户
+    convertCustomer(){
+      this.convertCustomerDialogVisible = true;
+    }
   }
 })
 
