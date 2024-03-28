@@ -12,20 +12,70 @@
     <result column="edit_by" jdbcType="INTEGER" property="editBy" />
     <result column="deleted" jdbcType="INTEGER" property="deleted" />
   </resultMap>
+
+  <resultMap id="ClueRemarkResultMap" type="com.bjpowernode.model.TClueRemark">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="clue_id" jdbcType="INTEGER" property="clueId" />
+    <result column="note_way" jdbcType="INTEGER" property="noteWay" />
+    <result column="note_content" jdbcType="VARCHAR" property="noteContent" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="INTEGER" property="createBy" />
+    <result column="edit_time" jdbcType="TIMESTAMP" property="editTime" />
+    <result column="edit_by" jdbcType="INTEGER" property="editBy" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+    <!--    一对一关联查询-->
+    <association property="createByDO" javaType="com.bjpowernode.model.TUser">
+      <id column="createById" jdbcType="INTEGER" property="id"/>
+      <result column="createByName" jdbcType="INTEGER" property="name"/>
+    </association>
+    <!--    一对一关联查询-->
+    <association property="editByDO" javaType="com.bjpowernode.model.TUser">
+      <id column="editById" jdbcType="INTEGER" property="id"/>
+      <result column="editByName" jdbcType="INTEGER" property="name"/>
+    </association>
+    <!--    一对一关联查询-->
+    <association property="noteWayDO" javaType="com.bjpowernode.model.TDicValue">
+      <id column="noteWayId" jdbcType="INTEGER" property="id"/>
+      <result column="noteWayName" jdbcType="INTEGER" property="typeValue"/>
+    </association>
+
+  </resultMap>
+
   <sql id="Base_Column_List">
     id, clue_id, note_way, note_content, create_time, create_by, edit_time, edit_by, 
     deleted
   </sql>
+
+  <select id="selectClueRemarkByPage" parameterType="java.lang.Integer" resultMap="ClueRemarkResultMap">
+    select
+    tcr.*,
+    tu1.id createById,tu1.name createByName,
+    tu2.id editById,tu2.name editByName,
+    tdv.id noteWayId, tdv.type_value noteWayName
+    from t_clue_remark tcr left join t_user tu1 on tcr.create_by = tu1.id
+                           left join t_user tu2 on tcr.edit_by = tu2.id
+                           left join t_dic_value tdv on tcr.note_way = tdv.id
+
+
+    <where>
+      tcr.clue_id = #{clueId,jdbcType=INTEGER} and (tcr.deleted is null or tcr.deleted = 0)
+
+      ${filterSQL}
+    </where>
+  </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_clue_remark
     where id = #{id,jdbcType=INTEGER}
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_clue_remark
     where id = #{id,jdbcType=INTEGER}
   </delete>
+
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.bjpowernode.model.TClueRemark" useGeneratedKeys="true">
     insert into t_clue_remark (clue_id, note_way, note_content, 
       create_time, create_by, edit_time, 
@@ -34,6 +84,7 @@
       #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=INTEGER}, #{editTime,jdbcType=TIMESTAMP}, 
       #{editBy,jdbcType=INTEGER}, #{deleted,jdbcType=INTEGER})
   </insert>
+
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.bjpowernode.model.TClueRemark" useGeneratedKeys="true">
     insert into t_clue_remark
     <trim prefix="(" suffix=")" suffixOverrides=",">

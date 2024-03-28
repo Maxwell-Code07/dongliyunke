@@ -109,6 +109,37 @@
       <el-button type="success" plain @click="goBack">返 回</el-button>
     </el-form-item>
   </el-form>
+
+  <!--  表格-->
+  <el-table
+      :data="clueRemarkList"
+      style="width: 100%">
+    <el-table-column type="index" label="序号" width="60"/>
+    <el-table-column prop="noteWayDO.typeValue" label="跟踪方式"/>
+    <el-table-column prop="noteContent" label="跟踪内容"/>
+    <el-table-column property="createTime" label="跟踪时间"/>
+    <el-table-column property="createByDO.name" label="跟踪人"/>
+    <el-table-column property="editTime" label="编辑时间"/>
+    <el-table-column property="editByDO.name" label="编辑人"/>
+    <el-table-column label="操作">
+      <template #default="scope">
+        <a href="javascript:" @click="edit(scope.row.id)">编辑</a>
+        &nbsp
+        <a href="javascript:" @click="del(scope.row.id)">删除</a>
+      </template>
+    </el-table-column>
+  </el-table>
+
+  <!--分页条-->
+  <el-pagination
+      background
+      layout="prev, pager, next"
+      :page-size="pageSize"
+      :total="total"
+      @prev-click="toPage"
+      @next-clic="toPage"
+      @current-change="toPage"/>
+
 </template>
 
 <script>
@@ -140,11 +171,24 @@ export default defineComponent({
       clueRemark : {},
       // 跟踪方式的下拉选项，初始值是空
       noteWayOptions: [{}],
+
+      // 线索跟踪记录列表，初始值是空
+      clueRemarkList: [{
+        noteWayDO: {},
+        createByDO: {},
+        editByDO: {}
+      }],
+
+      // 分页时每页显示多少条数据
+      pageSize: 0,
+      // 分页总共查询出多少条数据
+      total: 0,
     }
   },
 
   mounted() {
     this.loadClueDetail();
+    this.loadClueRemarkList(1);
   },
 
   methods:{
@@ -186,6 +230,26 @@ export default defineComponent({
           }
         }
       })
+    },
+
+    // 查询线索跟踪列表数据
+    loadClueRemarkList(current) {
+      doGet("/api/clue/remark", {
+        current: current, // 当前查询第几页
+        clueId: this.$route.params.id
+      }).then(resp => {
+        console.log(resp);
+        if (resp.data.code === 200) {
+          this.clueRemarkList = resp.data.data.list;
+          this.pageSize = resp.data.data.pageSize;
+          this.total = resp.data.data.total;
+        }
+      })
+    },
+
+    // 分页函数(current这个参数是ele-plus组件传过来的，就是传的当前页）
+    toPage(current) {
+      this.loadClueRemarkList(current);
     },
   }
 })
