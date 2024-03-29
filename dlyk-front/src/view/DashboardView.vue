@@ -9,7 +9,7 @@
           active-text-color="#ffd04b"
           background-color="#334157"
           class="el-menu-vertical-demo"
-          default-active="2"
+          :default-active="currentRouterPath"
           text-color="#fff"
           style="border-right: solid 0px"
           :collapse="isCollapse"
@@ -208,6 +208,9 @@ export default defineComponent({
       user: { },
       // 控制仪表盘页面右侧内容体是否显示
       isRouterAlive: true,
+
+      //当前访问的路由路径
+      currentRouterPath: '',
     }
   },
 
@@ -230,6 +233,7 @@ export default defineComponent({
   mounted() {
     // 加载当前用户
     this.loadLoginUser();
+    this.loadCurrentRouterPath();
   },
 
   methods: {
@@ -268,6 +272,18 @@ export default defineComponent({
           })
         }
       });
+    },
+
+    // 加载当前路由路径
+    loadCurrentRouterPath(){
+      let path = this.$route.path; // /dashboard/activity/add
+      let arr = path.split("/"); // [ ,dashboard, activity, add]
+      if(arr.length > 3){
+        // 不用等于3，等于3其实意味着只有两个路径
+        this.currentRouterPath = "/" + arr[1] + "/" + arr[2];
+      }else{
+        this.currentRouterPath = path;
+      }
     }
   }
 
