@@ -15,6 +15,7 @@ import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
 import java.util.Date;
@@ -55,6 +56,7 @@ public class ClueServiceImpl implements ClueService {
         return count <= 0; // 没有查到手机号就是true,查到了是false
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int saveClue(ClueQuery clueQuery) {
 
@@ -80,6 +82,7 @@ public class ClueServiceImpl implements ClueService {
         return tclueMapper.selectDetailById(id);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int updateClue(ClueQuery clueQuery) {
         TClue tClue = new TClue();

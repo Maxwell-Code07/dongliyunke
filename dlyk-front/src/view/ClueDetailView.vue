@@ -313,6 +313,28 @@ export default defineComponent({
     // 转换客户
     convertCustomer(){
       this.convertCustomerDialogVisible = true;
+    },
+
+    // 线索转换客户
+    convertCustomerSubmit(){
+      this.$refs.convertCustomerRefForm.validate((isValid) => {
+        if(isValid){
+          doPost("/api/clue/customer",{
+            clueId : this.clueDetail.id,
+            product : this.customerQuery.product,
+            description : this.customerQuery.description,
+            nextContactTime : this.customerQuery.nextContactTime
+          }).then(resp => {
+            if(resp.data.code === 200){
+              messageTip("转换成功", "success");
+              // 刷新
+              this.reload();
+            }else{
+              messageTip("转换失败", "error");
+            }
+          })
+        }
+      })
     }
   }
 })

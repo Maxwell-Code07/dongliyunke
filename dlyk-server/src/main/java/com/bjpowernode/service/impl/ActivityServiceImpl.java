@@ -15,6 +15,7 @@ import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -40,6 +41,7 @@ public class ActivityServiceImpl implements ActivityService {
         return info;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int saveActivity(ActivityQuery activityQuery) {
         TActivity tActivity = new TActivity();
@@ -61,6 +63,7 @@ public class ActivityServiceImpl implements ActivityService {
         return tActivityMapper.selectDetailByPrimaryKey(id);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int updateActivity(ActivityQuery activityQuery) {
         TActivity tActivity = new TActivity();

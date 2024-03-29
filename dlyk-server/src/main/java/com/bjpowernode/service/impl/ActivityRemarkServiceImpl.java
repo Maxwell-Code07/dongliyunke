@@ -15,6 +15,7 @@ import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -29,6 +30,7 @@ public class ActivityRemarkServiceImpl implements ActivityRemarkService {
     @Resource
     private TActivityRemarkMapper tActivityRemarkMapper;
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int saveActivityRemark(ActivityRemarkQuery activityRemarkQuery) {
         TActivityRemark tActivityRemark = new TActivityRemark();
@@ -61,6 +63,7 @@ public class ActivityRemarkServiceImpl implements ActivityRemarkService {
         return tActivityRemarkMapper.selectByPrimaryKey(id);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int updateActivityRemark(ActivityRemarkQuery activityRemarkQuery) {
         TActivityRemark tActivityRemark = new TActivityRemark();
@@ -78,6 +81,7 @@ public class ActivityRemarkServiceImpl implements ActivityRemarkService {
     }
 
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int delActivityRemarkById(Integer id) {
         // 逻辑删除：不删数据，只是修改一下数据的状态；

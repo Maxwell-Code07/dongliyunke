@@ -14,6 +14,7 @@ import jakarta.annotation.Resource;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -28,6 +29,7 @@ public class ClueRemarkServiceImpl implements ClueRemarkService {
     @Resource
     private TClueRemarkMapper tClueRemarkMapper;
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int saveClueRemark(ClueRemarkQuery clueRemarkQuery) {
         TClueRemark tClueRemark = new TClueRemark();
