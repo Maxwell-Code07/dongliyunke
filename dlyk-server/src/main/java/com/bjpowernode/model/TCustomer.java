@@ -55,5 +55,18 @@ public class TCustomer implements Serializable {
      */
     private Integer editBy;
 
+    /**
+     * 一对一关联8个对象
+     */
+    private TClue clueDO = new TClue();
+    private TUser ownerDO = new TUser();
+    private TActivity activityDO = new TActivity();
+    private TDicValue appellationDO = new TDicValue();
+    private TDicValue needLoanDO = new TDicValue();
+    private TDicValue intentionStateDO = new TDicValue();
+    private TProduct intentionProductDO = new TProduct();
+    private TDicValue stateDO = new TDicValue();
+    private TDicValue SourceDO = new TDicValue();
+
     private static final long serialVersionUID = 1L;
 }

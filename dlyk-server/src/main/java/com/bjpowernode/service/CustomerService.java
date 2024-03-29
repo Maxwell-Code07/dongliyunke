@@ -1,6 +1,8 @@
 package com.bjpowernode.service;
 
+import com.bjpowernode.model.TCustomer;
 import com.bjpowernode.query.CustomerQuery;
+import com.github.pagehelper.PageInfo;
 
 /**
  * @Author hzz
@@ -8,4 +10,6 @@ import com.bjpowernode.query.CustomerQuery;
  */
 public interface CustomerService {
     Boolean convertCustomer(CustomerQuery customerQuery);
+
+    PageInfo<TCustomer> getCustomerByPage(Integer current);
 }

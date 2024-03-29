@@ -12,20 +12,112 @@
     <result column="edit_time" jdbcType="TIMESTAMP" property="editTime" />
     <result column="edit_by" jdbcType="INTEGER" property="editBy" />
   </resultMap>
+
+  <resultMap id="CustomerResultMap" type="com.bjpowernode.model.TCustomer">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="clue_id" jdbcType="INTEGER" property="clueId" />
+    <result column="product" jdbcType="INTEGER" property="product" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="next_contact_time" jdbcType="TIMESTAMP" property="nextContactTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="INTEGER" property="createBy" />
+    <result column="edit_time" jdbcType="TIMESTAMP" property="editTime" />
+    <result column="edit_by" jdbcType="INTEGER" property="editBy" />
+    <!--一对一关联线索-->
+    <association property="clueDO" javaType="com.bjpowernode.model.TClue">
+      <id column="clueId" jdbcType="INTEGER" property="id" />
+      <result column="full_name" jdbcType="VARCHAR" property="fullName" />
+      <result column="phone" jdbcType="VARCHAR" property="phone" />
+      <result column="weixin" jdbcType="VARCHAR" property="weixin" />
+      <result column="qq" jdbcType="VARCHAR" property="qq" />
+      <result column="email" jdbcType="VARCHAR" property="email" />
+      <result column="age" jdbcType="INTEGER" property="age" />
+      <result column="job" jdbcType="VARCHAR" property="job" />
+      <result column="year_income" jdbcType="DECIMAL" property="yearIncome" />
+      <result column="address" jdbcType="VARCHAR" property="address" />
+    </association>
+    <!--一对一关联查询的映射-->
+    <association property="ownerDO" javaType="com.bjpowernode.model.TUser">
+      <id column="ownerId" jdbcType="INTEGER" property="id" />
+      <result column="ownerName" jdbcType="VARCHAR" property="name" />
+    </association>
+    <!--一对一关联查询的映射-->
+    <association property="activityDO" javaType="com.bjpowernode.model.TActivity">
+      <id column="activityId" jdbcType="INTEGER" property="id" />
+      <result column="activityName" jdbcType="VARCHAR" property="name" />
+    </association>
+    <!--一对一关联查询的映射-->
+    <association property="appellationDO" javaType="com.bjpowernode.model.TDicValue">
+      <id column="appellationId" jdbcType="INTEGER" property="id" />
+      <result column="appellationName" jdbcType="VARCHAR" property="typeValue" />
+    </association>
+    <!--一对一关联查询的映射-->
+    <association property="needLoanDO" javaType="com.bjpowernode.model.TDicValue">
+      <id column="needLoanId" jdbcType="INTEGER" property="id" />
+      <result column="needLoanName" jdbcType="VARCHAR" property="typeValue" />
+    </association>
+    <!--一对一关联查询的映射-->
+    <association property="intentionStateDO" javaType="com.bjpowernode.model.TDicValue">
+      <id column="intentionStateId" jdbcType="INTEGER" property="id" />
+      <result column="intentionStateName" jdbcType="VARCHAR" property="typeValue" />
+    </association>
+    <!--一对一关联查询的映射-->
+    <association property="stateDO" javaType="com.bjpowernode.model.TDicValue">
+      <id column="stateId" jdbcType="INTEGER" property="id" />
+      <result column="stateName" jdbcType="VARCHAR" property="typeValue" />
+    </association>
+    <!--一对一关联查询的映射-->
+    <association property="sourceDO" javaType="com.bjpowernode.model.TDicValue">
+      <id column="sourceId" jdbcType="INTEGER" property="id" />
+      <result column="sourceName" jdbcType="VARCHAR" property="typeValue" />
+    </association>
+    <!--一对一关联查询的映射-->
+    <association property="intentionProductDO" javaType="com.bjpowernode.model.TProduct">
+      <id column="intentionProductId" jdbcType="INTEGER" property="id" />
+      <result column="intentionProductName" jdbcType="VARCHAR" property="name" />
+    </association>
+  </resultMap>
+
   <sql id="Base_Column_List">
     id, clue_id, product, description, next_contact_time, create_time, create_by, edit_time, 
     edit_by
   </sql>
+
+  <select id="selectCustomerPage" parameterType="java.lang.Integer" resultMap="CustomerResultMap">
+    select
+      tct.*,
+      tc.id clueId, tc.full_name, tc.phone, tc.weixin,
+      tu1.id ownerId, tu1.name ownerName,
+      ta.id activityId, ta.name activityName,
+      tdv.id appellationId, tdv.type_value appellationName,
+      tdv2.id needLoanId, tdv2.type_value needLoanName,
+      tdv3.id intentionStateId, tdv3.type_value intentionStateName,
+      tdv4.id stateId, tdv4.type_value stateName,
+      tdv5.id sourceId, tdv5.type_value sourceName,
+      tp.id intentionProductId, tp.name intentionProductName
+    from t_customer tct left join t_clue tc on tct.clue_id = tc.id
+                        left join t_user tu1 on tc.owner_id = tu1.id
+                        left join t_activity ta on tc.activity_id = ta.id
+                        left join t_dic_value tdv on tc.appellation = tdv.id
+                        left join t_dic_value tdv2 on tc.need_loan = tdv2.id
+                        left join t_dic_value tdv3 on tc.intention_state = tdv3.id
+                        left join t_dic_value tdv4 on tc.state = tdv4.id
+                        left join t_dic_value tdv5 on tc.source = tdv5.id
+                        left join t_product tp on tct.product = tp.id
+  </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_customer
     where id = #{id,jdbcType=INTEGER}
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_customer
     where id = #{id,jdbcType=INTEGER}
   </delete>
+
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.bjpowernode.model.TCustomer" useGeneratedKeys="true">
     insert into t_customer (clue_id, product, description, 
       next_contact_time, create_time, create_by, 
@@ -34,6 +126,7 @@
       #{nextContactTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=INTEGER}, 
       #{editTime,jdbcType=TIMESTAMP}, #{editBy,jdbcType=INTEGER})
   </insert>
+
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.bjpowernode.model.TCustomer" useGeneratedKeys="true">
     insert into t_customer
     <trim prefix="(" suffix=")" suffixOverrides=",">
