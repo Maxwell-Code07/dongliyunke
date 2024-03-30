@@ -3,9 +3,10 @@ package com.bjpowernode.service.impl;
 
 import com.bjpowernode.constant.Constants;
 import com.bjpowernode.manager.RedisManager;
+import com.bjpowernode.mapper.TPermissionMapper;
 import com.bjpowernode.mapper.TRoleMapper;
 import com.bjpowernode.mapper.TUserMapper;
-import com.bjpowernode.model.TActivityRemark;
+import com.bjpowernode.model.TPermission;
 import com.bjpowernode.model.TRole;
 import com.bjpowernode.model.TUser;
 import com.bjpowernode.query.BaseQuery;
@@ -49,6 +50,9 @@ public class UserServiceImpl implements UserService {
     @Resource
     private RedisManager redisManager;
 
+    @Resource
+    private TPermissionMapper tPermissionMapper;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         TUser tUser = tUserMapper.selectByLoginAct(username);
@@ -67,6 +71,11 @@ public class UserServiceImpl implements UserService {
 
         // 设置用户的角色
         tUser.setRoleList(stringRoleList);
+
+        // 查询一下该用户有哪些菜单权限
+        List<TPermission> menuPermissionList = tPermissionMapper.selectMenuPermissionByUserId(tUser.getId());
+        tUser.setMenuPermissionList(menuPermissionList);
+
         return tUser;
     }
 

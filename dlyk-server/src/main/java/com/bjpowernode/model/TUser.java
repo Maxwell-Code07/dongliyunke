@@ -105,6 +105,11 @@ public class TUser implements UserDetails, Serializable {
     private List<String> permissionList;
 
     /**
+     * 菜单列表
+     */
+    private List<TPermission> menuPermissionList;
+
+    /**
      * 一对一关联
      */
     private TUser createByDO;

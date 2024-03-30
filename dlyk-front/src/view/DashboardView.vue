@@ -17,140 +17,166 @@
           :router="true"
           :unique-opened="true">
 
-        <!--市场活动-->
-        <el-sub-menu index="1">
+
+        <el-sub-menu :index="index" v-for="(menuPermission, index) in user.menuPermissionList" :key="menuPermission.id">
           <template #title>
+
             <el-icon>
-              <OfficeBuilding/>
+              <component :is="menuPermission.icon"></component>
             </el-icon>
-            <span>市场活动</span>
+
+            <span>{{menuPermission.name}}</span>
           </template>
-          <el-menu-item index="/dashboard/activity">
+
+          <el-menu-item v-for="subPermission in menuPermission.subPermissionList" :key="subPermission.id" :index="subPermission.url">
+
             <el-icon>
-              <Notification/>
+              <component :is="subPermission.icon"></component>
             </el-icon>
-            市场活动
-          </el-menu-item>
-          <el-menu-item index="1-2">
-            <el-icon>
-              <DataAnalysis/>
-            </el-icon>
-            市场统计
+
+            {{subPermission.name}}
           </el-menu-item>
         </el-sub-menu>
 
-        <!--线索管理-->
-        <el-sub-menu index="2">
-          <template #title>
-            <el-icon>
-              <Operation/>
-            </el-icon>
-            <span>线索管理</span>
-          </template>
-          <el-menu-item index="/dashboard/clue">
-            <el-icon>
-              <Film/>
-            </el-icon>
-            线索管理
-          </el-menu-item>
-        </el-sub-menu>
 
-        <!--客户管理菜单-->
-        <el-sub-menu index="3">
-          <template #title>
-            <el-icon>
-              <User/>
-            </el-icon>
-            <span>客户管理</span>
-          </template>
-          <el-menu-item index="/dashboard/customer">
-            <el-icon>
-              <Postcard/>
-            </el-icon>
-            客户管理
-          </el-menu-item>
 
-        </el-sub-menu>
 
-        <!--交易管理菜单-->
-        <el-sub-menu index="4">
-          <template #title>
-            <el-icon>
-              <CreditCard/>
-            </el-icon>
-            <span>交易管理</span>
-          </template>
-          <el-menu-item index="1-1">
-            <el-icon>
-              <Postcard/>
-            </el-icon>
-            交易管理
-          </el-menu-item>
-        </el-sub-menu>
 
-        <!--产品管理菜单-->
-        <el-sub-menu index="5">
-          <template #title>
-            <el-icon>
-              <Memo/>
-            </el-icon>
-            <span>产品管理</span>
-          </template>
-          <el-menu-item index="1-1">
-            <el-icon>
-              <Postcard/>
-            </el-icon>
-            产品管理
-          </el-menu-item>
-        </el-sub-menu>
+<!--        &lt;!&ndash;市场活动&ndash;&gt;-->
+<!--        <el-sub-menu index="1">-->
+<!--          <template #title>-->
+<!--            <el-icon>-->
+<!--              <OfficeBuilding/>-->
+<!--            </el-icon>-->
+<!--            <span>市场活动</span>-->
+<!--          </template>-->
+<!--          <el-menu-item index="/dashboard/activity">-->
+<!--            <el-icon>-->
+<!--              <Notification/>-->
+<!--            </el-icon>-->
+<!--            市场活动-->
+<!--          </el-menu-item>-->
+<!--          <el-menu-item index="1-2">-->
+<!--            <el-icon>-->
+<!--              <DataAnalysis/>-->
+<!--            </el-icon>-->
+<!--            市场统计-->
+<!--          </el-menu-item>-->
+<!--        </el-sub-menu>-->
 
-        <!--字典管理菜单-->
-        <el-sub-menu index="6">
-          <template #title>
-            <el-icon>
-              <location/>
-            </el-icon>
-            <span>字典管理</span>
-          </template>
-          <el-menu-item index="1-1">
-            <el-icon>
-              <Postcard/>
-            </el-icon>
-            字典管理
-          </el-menu-item>
-        </el-sub-menu>
+<!--        &lt;!&ndash;线索管理&ndash;&gt;-->
+<!--        <el-sub-menu index="2">-->
+<!--          <template #title>-->
+<!--            <el-icon>-->
+<!--              <Operation/>-->
+<!--            </el-icon>-->
+<!--            <span>线索管理</span>-->
+<!--          </template>-->
+<!--          <el-menu-item index="/dashboard/clue">-->
+<!--            <el-icon>-->
+<!--              <Film/>-->
+<!--            </el-icon>-->
+<!--            线索管理-->
+<!--          </el-menu-item>-->
+<!--        </el-sub-menu>-->
 
-        <!--用户管理菜单-->
-        <el-sub-menu index="7">
-          <template #title>
-            <el-icon>
-              <UserFilled/>
-            </el-icon>
-            <span>用户管理</span>
-          </template>
-          <el-menu-item index="/dashboard/user">
-            <el-icon>
-              <Postcard/>
-            </el-icon>
-            用户管理
-          </el-menu-item>
-        </el-sub-menu>
+<!--        &lt;!&ndash;客户管理菜单&ndash;&gt;-->
+<!--        <el-sub-menu index="3">-->
+<!--          <template #title>-->
+<!--            <el-icon>-->
+<!--              <User/>-->
+<!--            </el-icon>-->
+<!--            <span>客户管理</span>-->
+<!--          </template>-->
+<!--          <el-menu-item index="/dashboard/customer">-->
+<!--            <el-icon>-->
+<!--              <Postcard/>-->
+<!--            </el-icon>-->
+<!--            客户管理-->
+<!--          </el-menu-item>-->
 
-        <!--系统管理菜单-->
-        <el-sub-menu index="8">
-          <template #title>
-            <el-icon>
-              <Setting/>
-            </el-icon>
-            <span>系统管理</span>
-          </template>
-          <el-menu-item index="1-1">
-            <el-icon>
-              <Postcard/>
-            </el-icon>
-            系统管理
-          </el-menu-item>
-        </el-sub-menu>
+<!--        </el-sub-menu>-->
+
+<!--        &lt;!&ndash;交易管理菜单&ndash;&gt;-->
+<!--        <el-sub-menu index="4">-->
+<!--          <template #title>-->
+<!--            <el-icon>-->
+<!--              <CreditCard/>-->
+<!--            </el-icon>-->
+<!--            <span>交易管理</span>-->
+<!--          </template>-->
+<!--          <el-menu-item index="1-1">-->
+<!--            <el-icon>-->
+<!--              <Postcard/>-->
+<!--            </el-icon>-->
+<!--            交易管理-->
+<!--          </el-menu-item>-->
+<!--        </el-sub-menu>-->
+
+<!--        &lt;!&ndash;产品管理菜单&ndash;&gt;-->
+<!--        <el-sub-menu index="5">-->
+<!--          <template #title>-->
+<!--            <el-icon>-->
+<!--              <Memo/>-->
+<!--            </el-icon>-->
+<!--            <span>产品管理</span>-->
+<!--          </template>-->
+<!--          <el-menu-item index="1-1">-->
+<!--            <el-icon>-->
+<!--              <Postcard/>-->
+<!--            </el-icon>-->
+<!--            产品管理-->
+<!--          </el-menu-item>-->
+<!--        </el-sub-menu>-->
+
+<!--        &lt;!&ndash;字典管理菜单&ndash;&gt;-->
+<!--        <el-sub-menu index="6">-->
+<!--          <template #title>-->
+<!--            <el-icon>-->
+<!--              <location/>-->
+<!--            </el-icon>-->
+<!--            <span>字典管理</span>-->
+<!--          </template>-->
+<!--          <el-menu-item index="1-1">-->
+<!--            <el-icon>-->
+<!--              <Postcard/>-->
+<!--            </el-icon>-->
+<!--            字典管理-->
+<!--          </el-menu-item>-->
+<!--        </el-sub-menu>-->
+
+<!--        &lt;!&ndash;用户管理菜单&ndash;&gt;-->
+<!--        <el-sub-menu index="7">-->
+<!--          <template #title>-->
+<!--            <el-icon>-->
+<!--              <UserFilled/>-->
+<!--            </el-icon>-->
+<!--            <span>用户管理</span>-->
+<!--          </template>-->
+<!--          <el-menu-item index="/dashboard/user">-->
+<!--            <el-icon>-->
+<!--              <Postcard/>-->
+<!--            </el-icon>-->
+<!--            用户管理-->
+<!--          </el-menu-item>-->
+<!--        </el-sub-menu>-->
+
+<!--        &lt;!&ndash;系统管理菜单&ndash;&gt;-->
+<!--        <el-sub-menu index="8">-->
+<!--          <template #title>-->
+<!--            <el-icon>-->
+<!--              <Setting/>-->
+<!--            </el-icon>-->
+<!--            <span>系统管理</span>-->
+<!--          </template>-->
+<!--          <el-menu-item index="1-1">-->
+<!--            <el-icon>-->
+<!--              <Postcard/>-->
+<!--            </el-icon>-->
+<!--            系统管理-->
+<!--          </el-menu-item>-->
+<!--        </el-sub-menu>-->
+
 
       </el-menu>
     </el-aside>

@@ -11,15 +11,55 @@
     <result column="order_no" jdbcType="INTEGER" property="orderNo" />
     <result column="icon" jdbcType="VARCHAR" property="icon" />
   </resultMap>
+
+  <resultMap id="PermissionResultMap" type="com.bjpowernode.model.TPermission">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="order_no" jdbcType="INTEGER" property="orderNo" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
+    <!-- 一对多的关联映射，一个父菜单有多个子菜单 -->
+    <collection property="subPermissionList" ofType="com.bjpowernode.model.TPermission">
+      <id column="cid" jdbcType="INTEGER" property="id" />
+      <result column="cname" jdbcType="VARCHAR" property="name" />
+      <result column="curl" jdbcType="VARCHAR" property="url" />
+      <result column="cicon" jdbcType="VARCHAR" property="icon" />
+    </collection>
+  </resultMap>
+
   <sql id="Base_Column_List">
     id, `name`, code, url, `type`, parent_id, order_no, icon
   </sql>
+
+
+  <select id="selectMenuPermissionByUserId" parameterType="java.lang.Integer" resultMap="PermissionResultMap">
+    SELECT
+      tp.*,
+      childTp.id cid, childTp.name cname, childTp.url curl, childTp.icon cicon
+    FROM
+      t_permission tp
+        LEFT JOIN t_permission childTp ON tp.id = childTp.parent_id
+        LEFT JoIN t_role_permission trp ON tp.id = trp.permission_id
+        LEFT JoIN t_role tr ON trp.role_id = tr.id
+        LEFT joIN t_user_role tur ON tr.id = tur.role_id
+    WHERE
+      tur.user_id = #{userId,jdbcType=INTEGER}
+      AND tp.type = 'menu'
+      and childTp.type = 'menu'
+
+  </select>
+
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_permission
     where id = #{id,jdbcType=INTEGER}
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_permission
     where id = #{id,jdbcType=INTEGER}

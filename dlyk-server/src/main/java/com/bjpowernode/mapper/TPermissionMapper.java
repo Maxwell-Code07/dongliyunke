@@ -2,6 +2,8 @@ package com.bjpowernode.mapper;
 
 import com.bjpowernode.model.TPermission;
 
+import java.util.List;
+
 public interface TPermissionMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -14,4 +16,6 @@ public interface TPermissionMapper {
     int updateByPrimaryKeySelective(TPermission record);
 
     int updateByPrimaryKey(TPermission record);
+
+    List<TPermission> selectMenuPermissionByUserId(Integer userId);
 }
