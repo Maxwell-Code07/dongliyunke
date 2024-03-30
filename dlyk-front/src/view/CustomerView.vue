@@ -46,6 +46,8 @@
 <script>
 import {defineComponent} from "vue";
 import {doGet} from "../http/httpRequest.js";
+import axios from "axios";
+import {getToken} from "../util/util.js";
 
 export default defineComponent({
   name: "CustomerView",
@@ -94,13 +96,25 @@ export default defineComponent({
       })
     },
 
-    //分页函数
+    // 分页函数
     page(number) { //number值是element-plus回调时传给我们的，number这个值就是当前页
       this.getData(number);
     },
+
+    // 批量导出客户Excel数据
+    batchExportExcel(){
+      let token = getToken();
+      // 1.向后端发送一个请求
+      let iframe = document.createElement("iframe");
+      iframe.src = axios.defaults.baseURL + "/api/exportExcel?Authorization=" + token;
+      iframe.style.display="none"; // iframe隐藏，页面上不要显示出来
+      document.body.appendChild(iframe);
+
+
+      // 2.后端查询数据库的数据，把数据写入Excel以流的方式输出到浏览器
+      // 3.浏览器弹出一个下载框进行文件下载（不需要自己实现，浏览器本身实现）
+    },
   }
-
-
 })
 </script>
 

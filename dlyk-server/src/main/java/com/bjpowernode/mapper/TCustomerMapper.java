@@ -18,4 +18,6 @@ public interface TCustomerMapper {
     int updateByPrimaryKey(TCustomer record);
 
     List<TCustomer> selectCustomerPage();
+
+    List<TCustomer> selectCustomerByExcel();
 }

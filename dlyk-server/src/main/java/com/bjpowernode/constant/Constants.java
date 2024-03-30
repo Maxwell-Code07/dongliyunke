@@ -28,4 +28,12 @@ public class Constants {
 
     // 请求token的名称
     public static final String TOKEN_NAME = "Authorization";
+
+    public static final String EMPTY = "";
+
+    // 导出Excel的接口路径
+    public static final String EXPORT_EXCEL_URL = "/api/exportExcel";
+
+    //
+    public static final String EXCEL_FILE_NAME = "客户信息数据";
 }

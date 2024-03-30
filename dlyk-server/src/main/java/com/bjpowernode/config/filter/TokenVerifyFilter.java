@@ -41,8 +41,15 @@ public class TokenVerifyFilter extends OncePerRequestFilter {
             //验证jwt通过了 ，让Filter链继续执行，也就是继续执行下一个Filter
             filterChain.doFilter(request, response);
         } else {
-
-            String token = request.getHeader("Authorization");
+            String token = null;
+            // 针对Excel导出的路径
+            if(request.getRequestURI().equals(Constants.EXPORT_EXCEL_URL)){
+                // 从请求路径的参数中获取token
+                token = request.getParameter("Authorization");
+            }else{
+                // 其他请求都是从请求头中获取token
+                token = request.getHeader("Authorization");
+            }
 
             if (!StringUtils.hasText(token)) {
                 //token验证未通过的统一结果

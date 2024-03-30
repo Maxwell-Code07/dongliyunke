@@ -106,6 +106,29 @@
                         left join t_product tp on tct.product = tp.id
   </select>
 
+    <select id="selectCustomerByExcel" resultMap="CustomerResultMap">
+    select
+      tct.*,
+      tc.id clueId, tc.full_name, tc.phone, tc.weixin,tc.qq,tc.email,tc.age,tc.job,tc.year_income,tc.address,
+      tu1.id ownerId, tu1.name ownerName,
+      ta.id activityId, ta.name activityName,
+      tdv.id appellationId, tdv.type_value appellationName,
+      tdv2.id needLoanId, tdv2.type_value needLoanName,
+      tdv3.id intentionStateId, tdv3.type_value intentionStateName,
+      tdv4.id stateId, tdv4.type_value stateName,
+      tdv5.id sourceId, tdv5.type_value sourceName,
+      tp.id intentionProductId, tp.name intentionProductName
+    from t_customer tct left join t_clue tc on tct.clue_id = tc.id
+                        left join t_user tu1 on tc.owner_id = tu1.id
+                        left join t_activity ta on tc.activity_id = ta.id
+                        left join t_dic_value tdv on tc.appellation = tdv.id
+                        left join t_dic_value tdv2 on tc.need_loan = tdv2.id
+                        left join t_dic_value tdv3 on tc.intention_state = tdv3.id
+                        left join t_dic_value tdv4 on tc.state = tdv4.id
+                        left join t_dic_value tdv5 on tc.source = tdv5.id
+                        left join t_product tp on tct.product = tp.id
+  </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

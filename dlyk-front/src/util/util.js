@@ -44,3 +44,29 @@ export function messsageConfirm(msg){
 export function goBack(){
     this.$router.go(-1);
 }
+
+/**
+ * 获取token
+ * @returns {string}
+ */
+export function getToken(){
+    // 在发送请求之前做些什么
+    // 在请求头中放入一个token(jwt)传给后端
+    let token = window.sessionStorage.getItem(getTokenName());
+    if (!token) { // 前面加了一个!，表示token为空，token不存在，token没有值的意思
+        token = window.localStorage.getItem(getTokenName());
+    }
+    if (token) { // 表示token不为空，token存在，token有值的意思
+        // token放到请求头中的名为Authorization的参数里面去了
+        return token;
+    }else{
+        messsageConfirm( "请求token是空,是否重新去登录？").then(() => { // 用户点击“确定”按钮，就会出发then函数
+            // 既然token没法通过，那么前端的token肯定是有问题的，那干脆在调登录页前删掉那个有问题的token
+            removeToken();
+            // 跳到登录页（跳路由就可以，不需要/api/login）
+            window.location.href = "/";
+        }).catch(() => { // 用户点击“取消”按钮，就会出发catch函数
+            messageTip("取消去登录","warning");
+        })
+    }
+}
