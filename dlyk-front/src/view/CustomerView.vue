@@ -47,7 +47,7 @@
 import {defineComponent} from "vue";
 import {doGet} from "../http/httpRequest.js";
 import axios from "axios";
-import {getToken} from "../util/util.js";
+import {getToken, messageTip} from "../util/util.js";
 
 export default defineComponent({
   name: "CustomerView",
@@ -71,6 +71,9 @@ export default defineComponent({
       pageSize: 0,
       // 分页总共查询出多少条数据
       total: 0,
+
+      // 客户的id数组，初始值是空
+      customerIdArray:[{}],
     }
   },
 
@@ -79,8 +82,15 @@ export default defineComponent({
   },
 
   methods:{
-    handleSelectionChange(){
-
+    // 勾选或者取消勾选时，触发该函数（已经勾选的数据会传给我们这个函数）
+    handleSelectionChange(seleteionnDataArray) {
+      this.customerIdArray = [];
+      console.log(seleteionnDataArray);
+      seleteionnDataArray.forEach(data => {
+        // data就是勾选出的每一个单个用户对象
+        let customerId = data.id;
+        this.customerIdArray.push(customerId);
+      })
     },
 
     //获取线索分页列表数据
@@ -101,19 +111,38 @@ export default defineComponent({
       this.getData(number);
     },
 
-    // 批量导出客户Excel数据
-    batchExportExcel(){
+    // 导出客户Excel数据
+    exportExcel(ids){
       let token = getToken();
       // 1.向后端发送一个请求
       let iframe = document.createElement("iframe");
-      iframe.src = axios.defaults.baseURL + "/api/exportExcel?Authorization=" + token;
+      if(ids){
+        iframe.src = axios.defaults.baseURL + "/api/exportExcel?Authorization=" + token + "&ids=" + ids;
+      }else {
+        iframe.src = axios.defaults.baseURL + "/api/exportExcel?Authorization=" + token;
+      }
       iframe.style.display="none"; // iframe隐藏，页面上不要显示出来
       document.body.appendChild(iframe);
-
 
       // 2.后端查询数据库的数据，把数据写入Excel以流的方式输出到浏览器
       // 3.浏览器弹出一个下载框进行文件下载（不需要自己实现，浏览器本身实现）
     },
+
+    // 批量导出客户Excel数据
+    batchExportExcel(){
+      this.exportExcel(null);
+    },
+
+    // 选择导出
+    chooseExportExcel(){
+      if(this.customerIdArray.length <= 0){
+        messageTip("请选择要导出的数据","warning");
+        return;
+      }
+      // ids = "1,3,4,6,7";
+      let ids = this.customerIdArray.join(",");
+      this.exportExcel(ids);
+    }
   }
 })
 </script>

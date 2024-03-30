@@ -19,5 +19,5 @@ public interface TCustomerMapper {
 
     List<TCustomer> selectCustomerPage();
 
-    List<TCustomer> selectCustomerByExcel();
+    List<TCustomer> selectCustomerByExcel(List<String> idList);
 }

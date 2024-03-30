@@ -47,10 +47,10 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<CustomerExcel> getCustomerByExcel() {
+    public List<CustomerExcel> getCustomerByExcel(List<String> idList) {
         List<CustomerExcel> customerExcelList = new ArrayList<>();
 
-        List<TCustomer> tCustomerList = tCustomerMapper.selectCustomerByExcel();
+        List<TCustomer> tCustomerList = tCustomerMapper.selectCustomerByExcel(idList);
 
         // 把从数据库查询出来的List<TCustomer>数据，转换为List<CustomerExcel>数据
         tCustomerList.forEach(tCustomer -> {

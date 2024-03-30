@@ -10,10 +10,13 @@ import com.bjpowernode.service.CustomerService;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -48,7 +51,8 @@ public class CustomerController {
      * @throws IOException
      */
     @GetMapping(value = "/api/exportExcel")
-    public void exportExcel(HttpServletResponse response) throws IOException {
+    public void exportExcel(HttpServletResponse response,@RequestParam(value = "ids",required = false) String ids) throws IOException {
+
         // 要想让浏览器弹出下载框，后端要设置一下响应头信息
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setCharacterEncoding("utf-8");
@@ -56,7 +60,9 @@ public class CustomerController {
         response.setHeader("Content-disposition", "attachment;filename="+ URLEncoder.encode(Constants.EXCEL_FILE_NAME + System.currentTimeMillis(),"utf-8") + ".xlsx");
 
         // 2.后端查询数据库数据，把数据写入Excel，然后把Excel以IO流的方式输出到前端浏览器
-        List<CustomerExcel> dataList = customerService.getCustomerByExcel();
+
+        List<String> idList = StringUtils.hasText(ids) ? Arrays.asList(ids.split(",")) : new ArrayList<>();
+        List<CustomerExcel> dataList = customerService.getCustomerByExcel(idList);
 
         EasyExcel.write(response.getOutputStream(), CustomerExcel.class)
                 .sheet()

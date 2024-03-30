@@ -106,7 +106,7 @@
                         left join t_product tp on tct.product = tp.id
   </select>
 
-    <select id="selectCustomerByExcel" resultMap="CustomerResultMap">
+    <select id="selectCustomerByExcel" parameterType="java.util.List" resultMap="CustomerResultMap">
     select
       tct.*,
       tc.id clueId, tc.full_name, tc.phone, tc.weixin,tc.qq,tc.email,tc.age,tc.job,tc.year_income,tc.address,
@@ -127,6 +127,14 @@
                         left join t_dic_value tdv4 on tc.state = tdv4.id
                         left join t_dic_value tdv5 on tc.source = tdv5.id
                         left join t_product tp on tct.product = tp.id
+    <where>
+      <if test="idList != null and idList.size() > 0">
+        and tct.id in
+        <foreach collection="idList" item="id" separator="," open="(" close=")">
+          #{id}
+        </foreach>
+      </if>
+    </where>
   </select>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
