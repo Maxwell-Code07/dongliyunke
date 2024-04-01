@@ -25,12 +25,12 @@ public class MyAccessDeniedHandler implements AccessDeniedHandler {
         //没有权限访问，执行该方法，在该方法中返回json给前端，就行了
 
         //登录失败的统一结果
-//        R result = R.FAIL(CodeEnum.ACCESS_DENIED);
-//
-//        //把R对象转成json
-//        String resultJSON = JSONUtils.toJSON(result);
-//
-//        //把R以json返回给前端
-//        ResponseUtils.write(response, resultJSON);
+        R result = R.FAIL(CodeEnum.ACCESS_DENIED);
+
+        //把R对象转成json
+        String resultJSON = JSONUtils.toJSON(result);
+
+        //把R以json返回给前端
+        ResponseUtils.write(response, resultJSON);
     }
 }

@@ -76,6 +76,13 @@ public class UserServiceImpl implements UserService {
         List<TPermission> menuPermissionList = tPermissionMapper.selectMenuPermissionByUserId(tUser.getId());
         tUser.setMenuPermissionList(menuPermissionList);
 
+        // 查询一下该用户有哪些功能权限
+        List<TPermission> buttonPermissionList = tPermissionMapper.selectButtonPermissionByUserId(tUser.getId());
+        List<String> stringPermissionList = new ArrayList<>();
+        buttonPermissionList.forEach(tPermission -> {
+            stringPermissionList.add(tPermission.getCode()); // code就是权限表示符
+        });
+        tUser.setPermissionList(stringPermissionList); // 设置用户的权限表示符
         return tUser;
     }
 

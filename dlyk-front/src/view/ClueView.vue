@@ -89,8 +89,8 @@
 
 <script>
 import {defineComponent} from "vue";
-import {doGet, doPost} from "../http/httpRequest.js";
-import {messageTip} from "../util/util.js";
+import {doDelete, doGet, doPost} from "../http/httpRequest.js";
+import {messageTip, messsageConfirm} from "../util/util.js";
 
 export default defineComponent({
   name: "ClueView",
@@ -191,7 +191,25 @@ export default defineComponent({
     // 详情页面
     view(id){
       this.$router.push("/dashboard/clue/detail/" + id);
-    }
+    },
+
+    // 删除线索
+    del(id) {
+      messsageConfirm("是否删除该用户？").then(() => {
+        // 用户点击‘确定’按钮就会触发then函数
+        doDelete("/api/clue/" + id, {}).then(resp => {
+          if (resp.data.code === 200) {
+            messageTip("删除成功", "success");
+            // 页面刷新
+            this.reload();
+          } else {
+            messageTip("删除失败,原因：" + resp.data.msg, "error");
+          }
+        })
+      }).catch(() => { // 用户点击'取消'按钮就会触发catch函数
+        messageTip("取消删除", "warning");
+      })
+    },
 
   }
 

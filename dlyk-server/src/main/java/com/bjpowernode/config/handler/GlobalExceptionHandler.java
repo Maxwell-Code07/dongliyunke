@@ -6,6 +6,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.nio.file.AccessDeniedException;
+
 /**
  * @Author hzz
  * @Date 2024-03-15 21:02
@@ -34,5 +36,12 @@ public class GlobalExceptionHandler {
     public R handException3(DataAccessException e) {
         e.printStackTrace(); //在控制台打印异常信息
         return R.FAIL(CodeEnum.DATA_ACCESS_EXCEPTION);
+    }
+
+    // 权限不足的异常处理
+    @ExceptionHandler(value = AccessDeniedException.class)
+    public R handException(AccessDeniedException e) {
+        e.printStackTrace(); //在控制台打印异常信息
+        return R.FAIL(CodeEnum.ACCESS_DENIED);
     }
 }

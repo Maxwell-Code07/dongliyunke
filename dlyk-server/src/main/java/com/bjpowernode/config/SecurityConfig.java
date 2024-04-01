@@ -1,6 +1,7 @@
 package com.bjpowernode.config;
 
 import com.bjpowernode.config.filter.TokenVerifyFilter;
+import com.bjpowernode.config.handler.MyAccessDeniedHandler;
 import com.bjpowernode.config.handler.MyAuthenticationFailureHandler;
 import com.bjpowernode.config.handler.MyAuthenticationSuccessHandler;
 import com.bjpowernode.config.handler.MyLogoutSuccessHandler;
@@ -8,6 +9,7 @@ import com.bjpowernode.constant.Constants;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -26,6 +28,7 @@ import java.util.Arrays;
  * @Author hzz
  * @Date 2024-03-09 0:10
  */
+@EnableMethodSecurity // 开启方法级别的权限检查
 @Configuration
 public class SecurityConfig {
 
@@ -37,6 +40,9 @@ public class SecurityConfig {
 
     @Resource
     private MyLogoutSuccessHandler myLogoutSuccessHandler;
+
+    @Resource
+    private MyAccessDeniedHandler myAccessDeniedHandler;
 
     @Resource
     private TokenVerifyFilter tokenVerifyFilter;
@@ -91,6 +97,11 @@ public class SecurityConfig {
                 .logout((logout) -> {
                     logout.logoutUrl("/api/logout") // 退出提交到该地址，该地址不需要我们写controller的，是框架处理
                         .logoutSuccessHandler(myLogoutSuccessHandler);
+                })
+
+                // 无权限时的处理
+                .exceptionHandling((exceptionHandling) -> {
+                    exceptionHandling.accessDeniedHandler(myAccessDeniedHandler);
                 })
 
                 .build();

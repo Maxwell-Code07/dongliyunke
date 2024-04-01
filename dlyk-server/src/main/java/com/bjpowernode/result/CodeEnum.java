@@ -28,6 +28,8 @@ public enum CodeEnum {
 
     DATA_ACCESS_EXCEPTION(500,"数据访问异常"),
 
+    ACCESS_DENIED(500,"权限不足"),
+
     ;
 
     // 结果码
