@@ -1,7 +1,7 @@
 <template>
-  <el-button type="primary" class="btn" @click="addClue">录入线索</el-button>
-  <el-button type="success" class="btn" @click="importExcel">导入线索(Excel)</el-button>
-  <el-button type="danger" class="btn" @click="batchDelClue">批量删除</el-button>
+  <el-button type="primary" class="btn" @click="addClue" v-hasPermission="'clue:add'">录入线索</el-button>
+  <el-button type="success" class="btn" @click="importExcel" v-hasPermission="'clue:import'">导入线索(Excel)</el-button>
+  <el-button type="danger" class="btn" @click="batchDelClue" v-hasPermission="'clue:delete'">批量删除</el-button>
 
   <el-table
       :data="clueList"
@@ -34,9 +34,9 @@
     <el-table-column property="nextContactTime" label="下次联系时间" width="165"/>
     <el-table-column label="操作" width="230">
       <template #default="scope">
-        <el-button type="primary" @click="view(scope.row.id)">详情</el-button>
-        <el-button type="success" @click="edit(scope.row.id)">编辑</el-button>
-        <el-button type="danger" @click="del(scope.row.id)">删除</el-button>
+        <el-button type="primary" @click="view(scope.row.id)" v-hasPermission="'clue:view'">详情</el-button>
+        <el-button type="success" @click="edit(scope.row.id)" v-hasPermission="'clue:edit'">编辑</el-button>
+        <el-button type="danger" @click="del(scope.row.id)" v-hasPermission="'clue:delete'">删除</el-button>
       </template>
     </el-table-column>
   </el-table>
