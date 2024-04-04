@@ -41,4 +41,19 @@ public class StatisticController {
         return R.OK(nameValueList);
     }
 
+
+    @GetMapping(value = "/api/sourcePie/data")
+    public R sourcePieData(){
+
+        // [
+        //   { value: 20, name: '成交' },
+        //   { value: 60, name: '交易' },
+        //   { value: 80, name: '客户' },
+        //   { value: 100, name: '线索' }
+        // ]
+
+        List<NameValue> nameValueList = statisticService.loadsourcePieData();
+        return R.OK(nameValueList);
+    }
+
 }

@@ -86,4 +86,8 @@ public class StatisticManager {
 
         return resultList;
     }
+
+    public List<NameValue> loadsourcePieData() {
+        return tClueMapper.selectBySource();
+    }
 }

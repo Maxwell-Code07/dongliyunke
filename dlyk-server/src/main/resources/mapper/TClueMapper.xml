@@ -176,7 +176,16 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <select id="selectBySource" resultType="com.bjpowernode.result.NameValue">
+    select count(tc.id)   value,
+           tdv.type_value name
+    from t_clue tc
+           left join t_dic_value tdv on tc.source = tdv.id
+    where tdv.type_value is not null
+    group by tc.source
+  </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_clue
     where id = #{id,jdbcType=INTEGER}
   </delete>

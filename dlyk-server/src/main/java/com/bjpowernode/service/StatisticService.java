@@ -13,4 +13,6 @@ public interface StatisticService {
     SummaryData loadSummaryData();
 
     List<NameValue> loadSaleFunnelData();
+
+    List<NameValue> loadsourcePieData();
 }

@@ -2,6 +2,7 @@ package com.bjpowernode.mapper;
 
 import com.bjpowernode.model.TClue;
 import com.bjpowernode.query.BaseQuery;
+import com.bjpowernode.result.NameValue;
 
 import java.util.List;
 
@@ -27,4 +28,6 @@ public interface TClueMapper {
     int selectClueByCount();
 
     TClue selectDetailById(Integer id);
+
+    List<NameValue> selectBySource();
 }

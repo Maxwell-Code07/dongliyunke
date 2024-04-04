@@ -35,9 +35,10 @@
   </el-row>
 
   <!--销售漏斗图-->
-  <div id="saleFunnelChart" style="width: 600px;height:400px; margin-top: 140px;">
-    图渲染在此处
-  </div>
+  <div id="saleFunnelChart" style="width: 48%;height:350px; margin-top: 100px; float:left;">图渲染在此处</div>
+
+  <!--线索来源饼图-->
+  <div id="sourcePieChart" style="width: 30%;height:350px; margin: 100px; float:left;">图渲染在此处</div>
 
 </template>
 
@@ -62,6 +63,9 @@ export default defineComponent({
 
     // 加载销售漏斗图
     this.loadSaleFunnelChart();
+
+    // 加载线索来源饼图
+    this.loadSourcePieChart();
   },
 
   methods:{
@@ -183,9 +187,70 @@ export default defineComponent({
           option && myChart.setOption(option);
         }
       })
+    },
+
+    // 加载线索来源饼图
+    loadSourcePieChart(){
+      // 先查数据，再渲染图，不能先渲染图，然后再查数据
+      doGet("/api/sourcePie/data",{}).then(resp => {
+        if(resp.data.code === 200) {
+          let sourcePieData = resp.data.data;
+
+          // 1、拿到图表的DOM元素
+          var chartDom = document.getElementById('sourcePieChart');
+
+          // 2、使用echarts组件对dom进行初始化，得到一个空白的图表对象
+          var myChart = echarts.init(chartDom);
+
+          // 3、配置可选项（查看文档-->配置项手册）
+          var option = {
+            title: {
+              text: '线索来源统计',
+              left: 'center',
+              top: 'bottom'
+            },
+            tooltip: {
+              trigger: 'item'
+            },
+
+            // 图例
+            legend: {
+              orient: 'horizontal',
+              left: 'left'
+            },
+            // 系列
+            series: [
+              {
+                name: '线索来源统计',
+                type: 'pie',
+                // 饼图的半径
+                radius: '60%',
+                // 数据项
+                // data: [
+                //   { value: 1048, name: 'Search Engine' },
+                //   { value: 735, name: 'Direct' },
+                //   { value: 580, name: 'Email' },
+                //   { value: 484, name: 'Union Ads' },
+                //   { value: 300, name: 'Video Ads' }
+                // ],
+                data: sourcePieData,
+                emphasis: {
+                  itemStyle: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                  }
+                }
+              }
+            ]
+          };
+
+          // 4、如果配置了可选项，就把可选项设置到空白的图表对象中
+          option && myChart.setOption(option);
+        }
+      });
     }
   }
-
 })
 </script>
 

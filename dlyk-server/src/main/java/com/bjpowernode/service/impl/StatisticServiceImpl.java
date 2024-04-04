@@ -28,4 +28,9 @@ public class StatisticServiceImpl implements StatisticService {
     public List<NameValue> loadSaleFunnelData() {
         return statisticManager.loadSaleFunnelData();
     }
+
+    @Override
+    public List<NameValue> loadsourcePieData() {
+        return statisticManager.loadsourcePieData();
+    }
 }
