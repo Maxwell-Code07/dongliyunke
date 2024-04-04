@@ -2,11 +2,14 @@ package com.bjpowernode.manager;
 
 import com.bjpowernode.mapper.*;
 
+import com.bjpowernode.result.NameValue;
 import com.bjpowernode.result.SummaryData;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author hzz
@@ -58,5 +61,29 @@ public class StatisticManager {
                 .successTranAmount(successTranAmount)
                 .totalTranAmount(totalTranAmount)
                 .build();
+    }
+
+    public List<NameValue> loadSaleFunnelData() {
+
+        List<NameValue> resultList = new ArrayList<>();
+
+        int clueCount = tClueMapper.selectClueByCount();
+        int customerCount = tCustomerMapper.selectByCount();
+        int tranCount = tTranMapper.selectByTotalTranCount();
+        int tranSuccessCount = tTranMapper.selectBySuccessTranCount();
+
+        NameValue clue = NameValue.builder().name("线索").value(clueCount).build();
+        resultList.add(clue);
+
+        NameValue customer = NameValue.builder().name("客户").value(customerCount).build();
+        resultList.add(customer);
+
+        NameValue tran = NameValue.builder().name("交易").value(tranCount).build();
+        resultList.add(tran);
+
+        NameValue tranSuccess = NameValue.builder().name("成交").value(tranSuccessCount).build();
+        resultList.add(tranSuccess);
+
+        return resultList;
     }
 }

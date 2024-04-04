@@ -20,4 +20,8 @@ public interface TTranMapper {
     BigDecimal selectBySuccessTranAmount();
 
     BigDecimal selectByTotalTranAmount();
+
+    int selectByTotalTranCount();
+
+    int selectBySuccessTranCount();
 }

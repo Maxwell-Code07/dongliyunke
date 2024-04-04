@@ -36,12 +36,29 @@
     from t_tran
   </select>
 
+
+  <select id="selectByTotalTranCount" resultType="java.lang.Integer">
+    select
+        count(0)
+    from
+        (select distinct customer_id from t_tran) t
+  </select>
+
+
+  <select id="selectBySuccessTranCount" resultType="java.lang.Integer">
+    select
+      count(0)
+    from
+        (select distinct customer_id from t_tran where stage = 42) t
+  </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_tran
     where id = #{id,jdbcType=INTEGER}
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_tran
     where id = #{id,jdbcType=INTEGER}

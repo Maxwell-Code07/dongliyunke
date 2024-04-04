@@ -1,6 +1,9 @@
 package com.bjpowernode.service;
 
+import com.bjpowernode.result.NameValue;
 import com.bjpowernode.result.SummaryData;
+
+import java.util.List;
 
 /**
  * @Author hzz
@@ -8,4 +11,6 @@ import com.bjpowernode.result.SummaryData;
  */
 public interface StatisticService {
     SummaryData loadSummaryData();
+
+    List<NameValue> loadSaleFunnelData();
 }
