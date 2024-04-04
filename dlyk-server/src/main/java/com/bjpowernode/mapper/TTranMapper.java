@@ -2,6 +2,8 @@ package com.bjpowernode.mapper;
 
 import com.bjpowernode.model.TTran;
 
+import java.math.BigDecimal;
+
 public interface TTranMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -14,4 +16,8 @@ public interface TTranMapper {
     int updateByPrimaryKeySelective(TTran record);
 
     int updateByPrimaryKey(TTran record);
+
+    BigDecimal selectBySuccessTranAmount();
+
+    BigDecimal selectByTotalTranAmount();
 }

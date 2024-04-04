@@ -97,6 +97,12 @@
     where  <![CDATA[start_time <= now() and end_time >= now() ]]>
   </select>
 
+  <select id="selectByCount" resultType="java.lang.Integer">
+    select
+        count(0)
+    from t_activity
+  </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

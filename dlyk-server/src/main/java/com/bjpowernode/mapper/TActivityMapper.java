@@ -27,4 +27,6 @@ public interface TActivityMapper {
     TActivity selectDetailByPrimaryKey(Integer id);
 
     List<TActivity> selectOngoingActivity();
+
+    Integer selectByCount();
 }

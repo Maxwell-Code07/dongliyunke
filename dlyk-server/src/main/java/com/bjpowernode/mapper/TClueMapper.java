@@ -24,5 +24,7 @@ public interface TClueMapper {
 
     int selectByCount(String phone);
 
+    int selectClueByCount();
+
     TClue selectDetailById(Integer id);
 }

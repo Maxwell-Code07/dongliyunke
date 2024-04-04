@@ -135,6 +135,12 @@
     where phone = #{phone,jdbcType=VARCHAR}
   </select>
 
+  <select id="selectClueByCount" resultType="java.lang.Integer">
+    select
+      count(0)
+    from t_clue
+  </select>
+
 
   <select id="selectDetailById" parameterType="java.lang.Integer" resultMap="ClueResultMap">
     select
