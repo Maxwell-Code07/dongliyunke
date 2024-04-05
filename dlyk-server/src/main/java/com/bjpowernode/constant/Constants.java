@@ -10,6 +10,9 @@ public class Constants {
 
     public static final String LOGIN_URI = "/api/login";
 
+    // 用户注册时的请求路径
+    public static final String REGISTER_URI = "/api/user/register";
+
     // redis的key的命名规范： 项目名:模块名:功能名:唯一业务参数(比如用户id)
     public static final String REDIS_JWT_KEY = "dlyk:user:login:";
 

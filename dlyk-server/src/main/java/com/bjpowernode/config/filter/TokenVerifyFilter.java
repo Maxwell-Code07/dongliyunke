@@ -37,10 +37,10 @@ public class TokenVerifyFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (request.getRequestURI().equals(Constants.LOGIN_URI)) { //如果是登录请求，此时还没有生成jwt，那不需要对登录请求进行jwt验证
+        if (request.getRequestURI().equals(Constants.LOGIN_URI) || request.getRequestURI().equals(Constants.REGISTER_URI)) { //如果是登录或注册请求，此时还没有生成jwt，那不需要对登录请求进行jwt验证
             //验证jwt通过了 ，让Filter链继续执行，也就是继续执行下一个Filter
             filterChain.doFilter(request, response);
-        } else {
+        }else {
             String token = null;
             // 针对Excel导出的路径
             if(request.getRequestURI().equals(Constants.EXPORT_EXCEL_URL)){

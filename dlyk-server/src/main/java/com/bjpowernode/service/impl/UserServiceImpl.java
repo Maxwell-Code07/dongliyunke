@@ -6,9 +6,11 @@ import com.bjpowernode.manager.RedisManager;
 import com.bjpowernode.mapper.TPermissionMapper;
 import com.bjpowernode.mapper.TRoleMapper;
 import com.bjpowernode.mapper.TUserMapper;
+import com.bjpowernode.mapper.TUserRoleMapper;
 import com.bjpowernode.model.TPermission;
 import com.bjpowernode.model.TRole;
 import com.bjpowernode.model.TUser;
+import com.bjpowernode.model.TUserRole;
 import com.bjpowernode.query.BaseQuery;
 import com.bjpowernode.query.UserQuery;
 import com.bjpowernode.service.UserService;
@@ -52,6 +54,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private TPermissionMapper tPermissionMapper;
+
+    @Resource
+    private TUserRoleMapper tUserRoleMapper;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -173,5 +178,40 @@ public class UserServiceImpl implements UserService {
                 redisManager.setValue(Constants.REDIS_OWNER_KEY,t);
             }
         );
+    }
+
+    // 从主页注册，通过主页注册的用户，默认不启用，account_enabled属性为0
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public int registerUser(UserQuery userQuery) {
+
+        if(tUserMapper.selectByLoginAct(userQuery.getLoginAct()) != null){
+            throw new RuntimeException("该账号已存在！");
+        }
+
+        userQuery.setAccountNoExpired(1);
+        userQuery.setCredentialsNoExpired(1);
+        userQuery.setAccountNoLocked(1);
+        userQuery.setAccountEnabled(0);
+
+        TUser tUser = new TUser();
+
+        // 把UserQuery对象里面的属性数据赋值到TUser对象里面去(复制要求：两个对象的属性名相同，属性类型相同，才能复制)
+        BeanUtils.copyProperties(userQuery, tUser);
+
+        tUser.setLoginPwd(passwordEncoder.encode(userQuery.getLoginPwd())); // 密码加密
+        tUser.setCreateTime(new Date()); // 创建时间
+
+        // insertSelective方法 相比于 insert方法 的优势在于，前者会检测对象的属性有没有为空的，一旦有一个为空，就不插入了
+        int flag = tUserMapper.insert(tUser);
+
+        TUserRole tUserRole = new TUserRole();
+        // 用户编号为刚刚插入的用户的id
+        tUserRole.setUserId(tUser.getId());
+        // 角色编号为2
+        tUserRole.setRoleId(2);
+
+        flag += tUserRoleMapper.insertSelective(tUserRole);
+        return flag;
     }
 }

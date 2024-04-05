@@ -1,5 +1,6 @@
 package com.bjpowernode.mapper;
 
+import com.bjpowernode.commons.DataScope;
 import com.bjpowernode.model.TClue;
 import com.bjpowernode.query.BaseQuery;
 import com.bjpowernode.result.NameValue;

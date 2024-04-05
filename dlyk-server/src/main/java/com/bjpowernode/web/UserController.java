@@ -124,4 +124,13 @@ public class UserController {
         return R.OK(ownerList);
     }
 
+    /**
+     * 注册用户接口
+     */
+    @PostMapping(value = "/api/user/register")
+    public R registerUser(UserQuery userQuery){
+        int save = userService.registerUser(userQuery);
+        return save >= 2 ? R.OK() : R.FAIL();
+    }
+
 }

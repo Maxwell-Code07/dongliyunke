@@ -28,25 +28,70 @@
         </el-form-item>
 
         <el-form-item>
+          <el-button @click="signUp">注 册</el-button>
+        </el-form-item>
+
+        <el-form-item>
           <el-checkbox label="记住我" v-model="user.rememberMe"/>
         </el-form-item>
       </el-form>
 
-
     </el-main>
   </el-container>
+
+
+  <!--新增用户的弹窗（对话框）-->
+  <el-dialog v-model="userDialogVisible" :title="'销售员注册'" width="55%" center draggable>
+
+    <el-form ref="userRefForm" :model="userQuery" label-width="110px" :rules="registerRules">
+      <el-form-item label="账号" prop="loginAct">
+        <el-input v-model="userQuery.loginAct"/>
+      </el-form-item>
+
+      <el-form-item label="密码" prop="loginPwd">
+        <el-input type="password" v-model="userQuery.loginPwd"/>
+      </el-form-item>
+
+      <el-form-item label="确认密码" prop="checkLoginPwd">
+        <el-input type="password" v-model="userQuery.checkLoginPwd"/>
+      </el-form-item>
+
+      <el-form-item label="姓名" prop="name">
+        <el-input v-model="userQuery.name"/>
+      </el-form-item>
+
+      <el-form-item label="手机" prop="phone">
+        <el-input v-model="userQuery.phone"/>
+      </el-form-item>
+
+      <el-form-item label="邮箱" prop="email">
+        <el-input v-model="userQuery.email"/>
+      </el-form-item>
+
+    </el-form>
+
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button class="margin-right-10" @click="userDialogVisible = false">关 闭</el-button>
+        <el-button type="primary" @click="userSubmit">提 交</el-button>
+      </div>
+    </template>
+  </el-dialog>
 
 </template>
 
 <script>
 
 import {defineComponent} from "vue";
-import {doGet, doPost} from "../http/httpRequest.js";
+import {doGet, doPost, doPut} from "../http/httpRequest.js";
 import {getTokenName, messageTip, removeToken} from "../util/util.js";
 
 export default defineComponent({
   // 组件的名字
   name: "LoginView",
+
+  // 注入
+  inject:['reload'],
 
   // 定义页面使用到的变量，定义时初始值都是给个空的
   data() {
@@ -65,6 +110,49 @@ export default defineComponent({
           {required: true, message: '请输入登录密码', trigger: 'blur'},
           {min: 6, max: 16, message: '登录密码长度为 6-16位', trigger: 'blur'}
         ]
+
+      },
+      // 用户的弹窗是否弹出来，true就弹出来，false就不弹出来
+      userDialogVisible: false,
+      userQuery:{
+
+      },
+      // 定义用户验证规则
+      registerRules: {
+        loginAct: [
+          {required: true, message: '请输入登录账号', trigger: 'blur'}
+        ],
+        loginPwd: [
+          {required: true, message: '请输入登录密码', trigger: 'blur'},
+          {min: 6, max: 16, message: '登录密码长度为 6-16位', trigger: 'blur'}
+        ],
+        checkLoginPwd: [
+          {required: true, message: '请输入确认密码', trigger: 'blur'},
+          {
+            validator: (rule, value, callback) => {
+              if (value === '') {
+                callback(new Error('请输入确认密码'));
+              } else if (value !== this.userQuery.loginPwd) {
+                callback(new Error('确认密码与登录密码不一致'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'blur'
+          }
+        ],
+        name: [
+          {required: true, message: '请输入姓名', trigger: 'blur'},
+          {pattern: /^[\u4e00-\u9fa5]{1,5}$/, message: '姓名必须是中文', trigger: 'blur'}
+        ],
+        phone: [
+          {required: true, message: '请输入手机号', trigger: 'blur'},
+          {pattern: /^1[3-9]\d{9}$/, message: '手机号码格式有误', trigger: 'blur'}
+        ],
+        email: [
+          {required: true, message: '邮箱不能为空', trigger: 'blur'},
+          {pattern: /^[a-zA-z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, message: '邮箱格式有误', trigger: 'blur'}
+        ],
 
       }
     }
@@ -133,6 +221,35 @@ export default defineComponent({
           }
         })
       }
+    },
+
+    // 注册函数
+    signUp(){
+      this.userDialogVisible = true;
+    },
+
+    // 提交注册用户
+    userSubmit(){
+      let formData = new FormData();
+      for (let field in this.userQuery) {
+        formData.append(field, this.userQuery[field]);
+      }
+
+      this.$refs.userRefForm.validate((isVaild) => {
+        if (isVaild) {
+          doPost("/api/user/register", formData).then(resp => { // 新增
+            if (resp.data.code === 200) {
+              messageTip("注册成功", "success");
+              // 页面刷新
+              this.userDialogVisible = false;
+              console.log(this.content)
+              console.log(this.user)
+            } else {
+              messageTip("注册失败", "error");
+            }
+          })
+        }
+      })
     }
   }
 })
@@ -173,4 +290,15 @@ img {
 .el-button {
   width: 100%;
 }
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end; /* 让按钮靠右对齐 */
+  align-items: center; /* 垂直居中按钮 */
+}
+
+.margin-right-10 {
+  margin-right: 10px; /* 设置右边距 */
+}
+
 </style>

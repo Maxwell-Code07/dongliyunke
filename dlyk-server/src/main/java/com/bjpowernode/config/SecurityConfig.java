@@ -71,7 +71,7 @@ public class SecurityConfig {
                 // formLoginConfigurer.setPasswordParameter("loginPwd");
 
                 .authorizeHttpRequests((authoriize) -> {
-                    authoriize.requestMatchers("/api/login").permitAll()
+                    authoriize.requestMatchers("/api/login","/api/user/register").permitAll()
                             //其他任何请求都需要登录后才需要访问
                             .anyRequest().authenticated();
                 })

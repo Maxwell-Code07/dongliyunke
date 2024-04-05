@@ -26,4 +26,8 @@ public interface UserService extends UserDetailsService {
     int batchDelUserIds(List<String> idList);
 
     List<TUser> getOwnerList();
+
+    // 从主页注册，通过主页注册的用户，默认不启用，account_enabled属性为0
+    int registerUser(UserQuery userQuery);
+
 }
